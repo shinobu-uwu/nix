@@ -149,6 +149,9 @@
     openssl
     curl
     expat
-    # Add more libraries here if specific Mason tools complain about missing .so files
   ];
+
+  hardware.opentabletdriver.enable = true;
+  hardware.uinput.enable = true;
+  boot.kernelModules = [ "uinput" ];
 }
