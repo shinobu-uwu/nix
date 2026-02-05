@@ -79,6 +79,7 @@
     wget
     git
     lact
+    efibootmgr
   ];
 
   programs.zsh.enable = true;
@@ -164,4 +165,6 @@
   hardware.amdgpu.initrd.enable = true;
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = [ "multi-user.target" ];
+
+  services.gvfs.enable = true;
 }

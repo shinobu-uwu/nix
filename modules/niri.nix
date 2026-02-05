@@ -10,6 +10,7 @@
     bibata-cursors
     xwayland-satellite
     obs-studio
+    nautilus
   ];
 
   programs.obs-studio = {
