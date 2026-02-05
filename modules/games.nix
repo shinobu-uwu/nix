@@ -6,6 +6,7 @@
     wineWowPackages.waylandFull
     steam
     gamemode
+    osu-lazer-bin
   ];
 
   programs.gamemode.enable = true;

@@ -81,6 +81,24 @@ in { pkgs, ... }: {
         modules-left = [ "niri/workspaces" "pulseaudio" "temperature" ];
         modules-center = [ "niri/window" ];
         modules-right = [ "cpu" "memory" "battery" "clock" ];
+        "niri/workspaces" = {
+          format = "{icon}";
+          format-icons = {
+            "1" = "1";
+            "2" = "2";
+            "3" = "3";
+            "4" = "4";
+            "5" = "5";
+            "6" = "6";
+            "7" = "7";
+            "8" = "8";
+            "9" = "9";
+
+            "chats" = "";
+
+            "default" = "";
+          };
+        };
         "niri/window" = {
           separate-outputs = true;
           max-length = 40;
@@ -147,6 +165,35 @@ in { pkgs, ... }: {
         background-color: @purple;
         border-radius: 20px;
         margin: 0 5px;
+      }
+
+      #workspaces button {
+        padding: 0 12px;
+        color: @foreground;
+        background-image: linear-gradient(
+          to bottom, 
+          transparent 20%, 
+          @grey 20%, 
+          @grey 80%, 
+          transparent 80%
+        );
+        background-size: 1px 100%;
+        background-repeat: no-repeat;
+        background-position: right center;
+        border-radius: 0;
+      }
+
+      #workspaces button:last-child {
+        background-image: none;
+        border-radius: 0 20px 20px 0;
+      }
+
+      #workspaces button:first-child {
+        border-radius: 20px 0 0 20px;
+      }
+
+      #workspaces button:only-child {
+        border-radius: 20px;
       }
 
       #workspaces button {
@@ -374,7 +421,7 @@ in { pkgs, ... }: {
       zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:]}={[:upper:]}'
       zstyle ":completion:*:commands" rehash 1
       [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-      alias ls='exa --icons'
+      alias ls='eza --icons'
       export EDITOR=nvim
     '';
   };
