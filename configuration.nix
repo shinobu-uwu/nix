@@ -139,4 +139,16 @@
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
   };
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc
+    zlib
+    fuse3
+    icu
+    nss
+    openssl
+    curl
+    expat
+    # Add more libraries here if specific Mason tools complain about missing .so files
+  ];
 }
