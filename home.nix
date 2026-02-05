@@ -33,7 +33,7 @@ in { pkgs, ... }: {
     QT_QPA_PLATFORM = "wayland;xcb";
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1"; # Firefox Wayland support
-    SDL_VIDEODRIVER = "wayland"; # Games/SDL apps
+    SDL_VIDEODRIVER = "wayland,x11"; # Games/SDL apps
     _JAVA_AWT_WM_NONREPARENTING = "1"; # Fixes blank windows in Java apps
     XDG_CURRENT_DESKTOP = "niri";
     XDG_SESSION_TYPE = "wayland";
@@ -100,7 +100,7 @@ in { pkgs, ... }: {
           format-icons = [ "" "" "" "" "" ];
         };
         "memory" = {
-          interval = 30;
+          interval = 5;
           format = "  {used:0.1f}G";
         };
         "battery" = {
