@@ -38,6 +38,10 @@
     via
     openssl
     killall
+    qemu
+    virt-manager
+    spice-gtk
+    quickemu
   ];
   fonts = {
     enableDefaultPackages = true;

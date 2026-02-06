@@ -13,6 +13,7 @@
   ];
 
   # Bootloader.
+  boot.loader.systemd-boot.enable = false;
   boot.loader.timeout = 0;
   boot.loader.limine = {
     enable = true;
@@ -65,7 +66,16 @@
   users.users.shinobu = {
     isNormalUser = true;
     description = "shinobu";
-    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "video" "users" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "audio"
+      "video"
+      "users"
+      "libvirtd"
+      "kvm"
+    ];
     shell = pkgs.zsh;
   };
 
@@ -82,6 +92,7 @@
     efibootmgr
   ];
 
+  virtualisation.libvirtd.enable = true;
   programs.zsh.enable = true;
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -155,16 +166,19 @@
   ];
 
   hardware.opentabletdriver.enable = true;
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true;
   hardware.uinput.enable = true;
   boot.kernelModules = [ "uinput" ];
-
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
   hardware.amdgpu.initrd.enable = true;
+
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = [ "multi-user.target" ];
 
   services.gvfs.enable = true;
+  services.upower.enable = true;
 }
