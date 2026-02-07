@@ -43,6 +43,7 @@
     spice-gtk
     quickemu
     playerctl
+    yt-dlp
   ];
   fonts = {
     enableDefaultPackages = true;

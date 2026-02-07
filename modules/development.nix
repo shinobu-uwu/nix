@@ -10,5 +10,8 @@
     bun
     nodejs
     lazygit
+    gh
+    gdb
+    xh
   ];
 }
