@@ -18,6 +18,7 @@
   boot.loader.limine = {
     enable = true;
     biosSupport = false;
+    secureBoot.enable = true;
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -90,6 +91,7 @@
     git
     lact
     efibootmgr
+    sbctl
   ];
 
   virtualisation.libvirtd.enable = true;
@@ -178,6 +180,14 @@
 
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = [ "multi-user.target" ];
+  systemd.user.services.playerctld = {
+    description = "playerctl daemon";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.playerctl}/bin/playerctld";
+      Restart = "on-failure";
+    };
+  };
 
   services.gvfs.enable = true;
   services.upower.enable = true;

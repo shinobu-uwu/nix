@@ -17,6 +17,62 @@ in { pkgs, ... }: {
   home.homeDirectory = "/home/shinobu";
   home.stateVersion = "25.11";
 
+  services.swayidle = let
+    lock = "${pkgs.swaylock}/bin/swaylock --daemonize";
+    display = status:
+      "${pkgs.niri}/bin/niri msg action power-${status}-monitors";
+  in {
+    enable = true;
+    timeouts = [
+      {
+        timeout = 60 * 4;
+        command = lock;
+      }
+      {
+        timeout = 60 * 5;
+        command = display "off";
+        resumeCommand = display "on";
+      }
+      {
+        timeout = 60 * 15;
+        command = "${pkgs.systemd}/bin/systemctl suspend";
+      }
+    ];
+    events = [
+      {
+        event = "before-sleep";
+        # adding duplicated entries for the same event may not work
+        command = (display "off") + "; " + lock;
+      }
+      {
+        event = "after-resume";
+        command = display "on";
+      }
+      {
+        event = "lock";
+        command = (display "off") + "; " + lock;
+      }
+      {
+        event = "unlock";
+        command = display "on";
+      }
+    ];
+  };
+
+  services.mako = {
+    enable = true;
+    settings = {
+      background-color = "#282a36";
+      text-color = "#f8f8f2";
+      border-color = "#44475a";
+      progress-color = "#ff5555";
+      default-timeout = 5000;
+      ignore-timeout = false;
+      max-visible = 5;
+      actions = true;
+    };
+  };
+
   programs.git = {
     enable = true;
     settings = {
@@ -78,9 +134,9 @@ in { pkgs, ... }: {
         layer = "top";
         margin-top = 4;
         position = "top";
-        modules-left = [ "niri/workspaces" "pulseaudio" "temperature" ];
+        modules-left = [ "niri/workspaces" "pulseaudio" "mpris" ];
         modules-center = [ "niri/window" ];
-        modules-right = [ "cpu" "memory" "battery" "clock" ];
+        modules-right = [ "cpu" "memory" "clock" ];
         "niri/workspaces" = {
           format = "{icon}";
           format-icons = {
@@ -112,10 +168,18 @@ in { pkgs, ... }: {
           interval = 1;
           format = ''<span size="large" rise="-1pt"></span>  {usage}%'';
         };
-        "temperature" = {
-          critical-threshold = 80;
-          format = "{icon} {temperatureC}°C";
-          format-icons = [ "" "" "" "" "" ];
+        "mpris" = {
+          format = "{player_icon} {dynamic}";
+          format-paused = "{status_icon} <i>{dynamic}</i>";
+          dynamic-order = [ "artist" "title" ];
+          dynamic-len = 15;
+          player-icons = {
+            default = "▶";
+            chromium = "";
+            firefox = "󰈹";
+            mpv = "";
+          };
+          status-icons = { paused = ""; };
         };
         "memory" = {
           interval = 5;
@@ -234,7 +298,7 @@ in { pkgs, ... }: {
       #backlight, 
       #network, 
       #clock, 
-      #temperature, 
+      #mpris, 
       #memory {
         padding: 0 5px;
         margin: 0 5px;
@@ -248,7 +312,7 @@ in { pkgs, ... }: {
       #pulseaudio, #backlight { border-left: 10px solid @orange; border-right: 10px solid @orange; background-color: @orange; }
       #network { border-left: 10px solid @pink; border-right: 10px solid @pink; background-color: @pink; }
       #clock { border-left: 10px solid @purple; border-right: 10px solid @purple; background-color: @purple; }
-      #temperature { border-left: 10px solid @pink; border-right: 10px solid @pink; background-color: @pink; }
+      #mpris { border-left: 10px solid @pink; border-right: 10px solid @pink; background-color: @pink; }
     '';
 
   };
@@ -257,8 +321,8 @@ in { pkgs, ... }: {
     prefer-no-csd = true;
     spawn-at-startup = [
       { argv = [ "${pkgs.vesktop}/bin/vesktop" ]; }
+      { argv = [ "${pkgs.zapzap}/bin/zapzap" ]; }
       { argv = [ "${pkgs.waybar}/bin/waybar" ]; }
-      { argv = [ "${pkgs.mako}/bin/mako" ]; }
       {
         argv = [''
           spawn-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
@@ -344,6 +408,7 @@ in { pkgs, ... }: {
       "Mod+W".action.close-window = [ ];
       "Mod+Ctrl+W".action.quit.skip-confirmation = true;
       "Mod+F".action.maximize-column = [ ];
+      "Ctrl+Print".action.screenshot-screen = { write-to-disk = false; };
     };
     outputs = {
       "DP-1" = {
@@ -447,4 +512,5 @@ in { pkgs, ... }: {
     ];
     extraConfig = "set-option -g status-position top";
   };
+
 }

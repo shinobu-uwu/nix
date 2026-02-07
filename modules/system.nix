@@ -42,6 +42,7 @@
     virt-manager
     spice-gtk
     quickemu
+    playerctl
   ];
   fonts = {
     enableDefaultPackages = true;

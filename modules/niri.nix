@@ -5,6 +5,7 @@
     mako
     swaybg
     swayidle
+    swaylock
     dracula-theme
     dracula-icon-theme
     bibata-cursors
