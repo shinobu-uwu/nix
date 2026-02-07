@@ -512,66 +512,12 @@ in { pkgs, ... }: {
     ];
     extraConfig = "set-option -g status-position top";
   };
-
   programs = {
     nushell = {
       enable = true;
-      configFile.source = ./.../config.nu;
       extraConfig = ''
-        # Common ls aliases and sort them by type and then name
-        # Inspired by https://github.com/nushell/nushell/issues/7190
-        def lla [...args] { ls -la ...(if $args == [] {["."]} else {$args}) | sort-by type name -i }
-        def la  [...args] { ls -a  ...(if $args == [] {["."]} else {$args}) | sort-by type name -i }
-        def ll  [...args] { ls -l  ...(if $args == [] {["."]} else {$args}) | sort-by type name -i }
-        def l   [...args] { ls     ...(if $args == [] {["."]} else {$args}) | sort-by type name -i }
-
-        # Completions
-        # mainly pieced together from https://www.nushell.sh/cookbook/external_completers.html
-
-        # carapace completions https://www.nushell.sh/cookbook/external_completers.html#carapace-completer
-        # + fix https://www.nushell.sh/cookbook/external_completers.html#err-unknown-shorthand-flag-using-carapace
-        # enable the package and integration bellow
-        let carapace_completer = {|spans: list&lt;string&gt;|
-          carapace $spans.0 nushell ...$spans
-          | from json
-          | if ($in | default [] | where value == $"($spans | last)ERR" | is-empty) { $in } else { null }
-        }
-        # some completions are only available through a bridge
-        # eg. tailscale
-        # https://carapace-sh.github.io/carapace-bin/setup.html#nushell
-        $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense'
-
-        # zoxide completions https://www.nushell.sh/cookbook/external_completers.html#zoxide-completer
-        let zoxide_completer = {|spans|
-            $spans | skip 1 | zoxide query -l ...$in | lines | where {|x| $x != $env.PWD}
-        }
-
-        # multiple completions
-        # the default will be carapace, but you can also switch to fish
-        # https://www.nushell.sh/cookbook/external_completers.html#alias-completions
-        let multiple_completers = {|spans|
-          ## alias fixer start https://www.nushell.sh/cookbook/external_completers.html#alias-completions
-          let expanded_alias = scope aliases
-          | where name == $spans.0
-          | get -i 0.expansion
-
-          let spans = if $expanded_alias != null {
-            $spans
-            | skip 1
-            | prepend ($expanded_alias | split row ' ' | take 1)
-          } else {
-            $spans
-          }
-          ## alias fixer end
-
-          match $spans.0 {
-            __zoxide_z | __zoxide_zi =&gt; $zoxide_completer
-            _ =&gt; $carapace_completer
-          } | do $in $spans
-        }
-
         $env.config = {
-          edit_mode: "vi",
+          edit_mode: 'vi',
           show_banner: false,
           completions: {
             case_sensitive: false # case-sensitive completions
@@ -583,7 +529,6 @@ in { pkgs, ... }: {
               enable: true 
               # set to lower can improve completion performance at the cost of omitting some options
               max_results: 100 
-              completer: $multiple_completers
             }
           }
         } 
@@ -605,10 +550,19 @@ in { pkgs, ... }: {
     starship = {
       enable = true;
       settings = {
-        add_newline = true;
+        aws.style = "bold #ffb86c";
+        cmd_duration.style = "bold #f1fa8c";
+        directory.style = "bold #50fa7b";
+        hostname.style = "bold #ff5555";
+        git_branch.style = "bold #ff79c6";
+        git_status.style = "bold #ff5555";
+        username = {
+          format = "[$user]($style) on ";
+          style_user = "bold #bd93f9";
+        };
         character = {
-          success_symbol = "[➜](bold green)";
-          error_symbol = "[➜](bold red)";
+          success_symbol = "[λ](bold #f8f8f2)";
+          error_symbol = "[λ](bold #ff5555)";
         };
       };
     };
