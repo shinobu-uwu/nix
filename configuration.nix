@@ -63,6 +63,13 @@
   # Configure console keymap
   console.keyMap = "us-acentos";
 
+  environment.shells = [ pkgs.nushell ];
+  programs.bash.interactiveShellInit = ''
+    if ! [ "$TERM" = "dumb" ] && [ -z "$BASH_EXECUTION_STRING" ]; then
+      exec nu
+    fi
+  '';
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.shinobu = {
     isNormalUser = true;
@@ -77,7 +84,7 @@
       "libvirtd"
       "kvm"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.nushell;
   };
 
   # Allow unfree packages
