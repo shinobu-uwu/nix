@@ -1,63 +1,78 @@
 let
   # Generates Mod+1..9 and Mod+Shift+1..9
-  workspaceBinds = builtins.listToAttrs (builtins.concatMap (i:
-    let key = toString i;
-    in [
-      {
-        name = "Mod+${key}";
-        value.action.focus-workspace = i;
-      }
-      {
-        name = "Mod+Shift+${key}";
-        value.action.move-column-to-workspace = i;
-      }
-    ]) (builtins.genList (x: x + 1) 9));
-in { pkgs, lib, ... }: {
+  workspaceBinds = builtins.listToAttrs (
+    builtins.concatMap (
+      i:
+      let
+        key = toString i;
+      in
+      [
+        {
+          name = "Mod+${key}";
+          value.action.focus-workspace = i;
+        }
+        {
+          name = "Mod+Shift+${key}";
+          value.action.move-column-to-workspace = i;
+        }
+      ]
+    ) (builtins.genList (x: x + 1) 9)
+  );
+in
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+{
   home.username = "shinobu";
   home.homeDirectory = "/home/shinobu";
   home.stateVersion = "25.11";
+  imports = [ inputs.nixvim.homeModules.nixvim ];
 
-  services.swayidle = let
-    lock = "${pkgs.swaylock}/bin/swaylock --daemonize";
-    display = status:
-      "${pkgs.niri}/bin/niri msg action power-${status}-monitors";
-  in {
-    enable = true;
-    timeouts = [
-      {
-        timeout = 60 * 4;
-        command = lock;
-      }
-      {
-        timeout = 60 * 5;
-        command = display "off";
-        resumeCommand = display "on";
-      }
-      {
-        timeout = 60 * 15;
-        command = "${pkgs.systemd}/bin/systemctl suspend";
-      }
-    ];
-    events = [
-      {
-        event = "before-sleep";
-        # adding duplicated entries for the same event may not work
-        command = (display "off") + "; " + lock;
-      }
-      {
-        event = "after-resume";
-        command = display "on";
-      }
-      {
-        event = "lock";
-        command = (display "off") + "; " + lock;
-      }
-      {
-        event = "unlock";
-        command = display "on";
-      }
-    ];
-  };
+  services.swayidle =
+    let
+      lock = "${pkgs.swaylock}/bin/swaylock --daemonize";
+      display = status: "${pkgs.niri}/bin/niri msg action power-${status}-monitors";
+    in
+    {
+      enable = true;
+      timeouts = [
+        {
+          timeout = 60 * 4;
+          command = lock;
+        }
+        {
+          timeout = 60 * 5;
+          command = display "off";
+          resumeCommand = display "on";
+        }
+        {
+          timeout = 60 * 15;
+          command = "${pkgs.systemd}/bin/systemctl suspend";
+        }
+      ];
+      events = [
+        {
+          event = "before-sleep";
+          # adding duplicated entries for the same event may not work
+          command = (display "off") + "; " + lock;
+        }
+        {
+          event = "after-resume";
+          command = display "on";
+        }
+        {
+          event = "lock";
+          command = (display "off") + "; " + lock;
+        }
+        {
+          event = "unlock";
+          command = display "on";
+        }
+      ];
+    };
 
   services.mako = {
     enable = true;
@@ -70,6 +85,21 @@ in { pkgs, lib, ... }: {
       ignore-timeout = false;
       max-visible = 5;
       actions = true;
+    };
+  };
+
+  programs.fuzzel = {
+    enable = true;
+    settings = {
+      colors = {
+        background = "#282a36dd";
+        text = "#f8f8f2ff";
+        match = "#8be9fdff";
+        selection-match = "#8be9fdff";
+        selection = "#44475add";
+        selection-text = "#f8f8f2ff";
+        border = "#bd93f9ff";
+      };
     };
   };
 
@@ -134,9 +164,17 @@ in { pkgs, lib, ... }: {
         layer = "top";
         margin-top = 4;
         position = "top";
-        modules-left = [ "niri/workspaces" "pulseaudio" "mpris" ];
+        modules-left = [
+          "niri/workspaces"
+          "pulseaudio"
+          "mpris"
+        ];
         modules-center = [ "niri/window" ];
-        modules-right = [ "cpu" "memory" "clock" ];
+        modules-right = [
+          "cpu"
+          "memory"
+          "clock"
+        ];
         "niri/workspaces" = {
           format = "{icon}";
           format-icons = {
@@ -149,9 +187,7 @@ in { pkgs, lib, ... }: {
             "7" = "7";
             "8" = "8";
             "9" = "9";
-
             "chats" = "";
-
             "default" = "";
           };
         };
@@ -162,7 +198,13 @@ in { pkgs, lib, ... }: {
         "pulseaudio" = {
           format = ''<span size="large" rise="-1pt">{icon}</span>  {volume}%'';
           format-muted = "󰝟";
-          format-icons = { default = [ "󰕿" "󰖀" "󰕾" ]; };
+          format-icons = {
+            default = [
+              "󰕿"
+              "󰖀"
+              "󰕾"
+            ];
+          };
         };
         "cpu" = {
           interval = 1;
@@ -171,7 +213,10 @@ in { pkgs, lib, ... }: {
         "mpris" = {
           format = "{player_icon} {dynamic}";
           format-paused = "{status_icon} <i>{dynamic}</i>";
-          dynamic-order = [ "artist" "title" ];
+          dynamic-order = [
+            "artist"
+            "title"
+          ];
           dynamic-len = 15;
           player-icons = {
             default = "▶";
@@ -179,7 +224,9 @@ in { pkgs, lib, ... }: {
             firefox = "󰈹";
             mpv = "";
           };
-          status-icons = { paused = ""; };
+          status-icons = {
+            paused = "";
+          };
         };
         "memory" = {
           interval = 5;
@@ -187,13 +234,31 @@ in { pkgs, lib, ... }: {
         };
         "battery" = {
           format = ''<span size="large" rise="-1pt">{icon}</span> {capacity}%'';
-          format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
-          format-charging =
-            ''<span size="large" rise="-1pt">󰂅</span>  {capacity}%'';
+          format-icons = [
+            "󰁺"
+            "󰁻"
+            "󰁼"
+            "󰁽"
+            "󰁾"
+            "󰁿"
+            "󰂀"
+            "󰂁"
+            "󰂂"
+            "󰁹"
+          ];
+          format-charging = ''<span size="large" rise="-1pt">󰂅</span>  {capacity}%'';
         };
         "backlight" = {
           format = ''<span size="large" rise="-1pt">{icon}</span>  {percent}%'';
-          format-icons = [ "󰃚" "󰃛" "󰃜" "󰃝" "󰃞" "󰃟" "󰃠" ];
+          format-icons = [
+            "󰃚"
+            "󰃛"
+            "󰃜"
+            "󰃝"
+            "󰃞"
+            "󰃟"
+            "󰃠"
+          ];
         };
         "network" = {
           format-wifi = ''<span size="large" rise="-1pt"></span>  {essid}'';
@@ -324,9 +389,11 @@ in { pkgs, lib, ... }: {
       { argv = [ "${pkgs.zapzap}/bin/zapzap" ]; }
       { argv = [ "${pkgs.waybar}/bin/waybar" ]; }
       {
-        argv = [''
-          spawn-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        ''];
+        argv = [
+          ''
+            spawn-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          ''
+        ];
       }
       {
         argv = [
@@ -338,8 +405,14 @@ in { pkgs, lib, ... }: {
         ];
       }
     ];
-    gestures = { hot-corners.enable = false; };
-    workspaces = { "chats" = { open-on-output = "DP-2"; }; };
+    gestures = {
+      hot-corners.enable = false;
+    };
+    workspaces = {
+      "chats" = {
+        open-on-output = "DP-2";
+      };
+    };
     window-rules = [
       {
         open-maximized = true;
@@ -352,7 +425,10 @@ in { pkgs, lib, ... }: {
         };
       }
       {
-        matches = [ { app-id = "zapzap"; } { app-id = "vesktop"; } ];
+        matches = [
+          { app-id = "zapzap"; }
+          { app-id = "vesktop"; }
+        ];
         open-focused = false;
         open-on-workspace = "chats";
       }
@@ -403,12 +479,13 @@ in { pkgs, lib, ... }: {
       "Mod+Shift+H".action.move-column-left = [ ];
       "Mod+Shift+L".action.move-column-right = [ ];
       "Mod+Shift+J".action.move-window-down-or-to-workspace-down = [ ];
-      "Mod+Shift+K".action.move-window-up-or-to-workspace-up =
-        [ ]; # Fixed 'down' typo from your snippet
+      "Mod+Shift+K".action.move-window-up-or-to-workspace-up = [ ]; # Fixed 'down' typo from your snippet
       "Mod+W".action.close-window = [ ];
       "Mod+Ctrl+W".action.quit.skip-confirmation = true;
       "Mod+F".action.maximize-column = [ ];
-      "Ctrl+Print".action.screenshot-screen = { write-to-disk = false; };
+      "Ctrl+Print".action.screenshot-screen = {
+        write-to-disk = false;
+      };
     };
     outputs = {
       "DP-1" = {
@@ -462,7 +539,11 @@ in { pkgs, lib, ... }: {
       };
       terminal.shell = {
         program = "${pkgs.zsh}/bin/zsh";
-        args = [ "-l" "-c" "tmux" ];
+        args = [
+          "-l"
+          "-c"
+          "tmux"
+        ];
       };
     };
   };
@@ -504,13 +585,17 @@ in { pkgs, lib, ... }: {
       {
         plugin = dracula;
         extraConfig = ''
-          set -g @dracula-show-battery false
+          set -g @dracula-narrow-plugins "uptime network weather"
           set -g @dracula-show-powerline true
           set -g @dracula-refresh-rate 10
+          set -g @dracula-fixed-location "Blumenau"
         '';
       }
     ];
-    extraConfig = "set-option -g status-position top";
+    extraConfig = ''
+      set-option -g status-position top
+      set -g renumber-windows on
+    '';
   };
   programs = {
     nushell = {
@@ -551,9 +636,7 @@ in { pkgs, lib, ... }: {
 
         # fish completions https://www.nushell.sh/cookbook/external_completers.html#fish-completer
                 let fish_completer = {|spans|
-                  ${
-                    lib.getExe pkgs.fish
-                  } --command $'complete "--do-complete=($spans | str join " ")"'
+                  ${lib.getExe pkgs.fish} --command $'complete "--do-complete=($spans | str join " ")"'
                   | $"value(char tab)description(char newline)" + $in
                     | from tsv --flexible --no-infer
                 }
@@ -650,9 +733,565 @@ in { pkgs, lib, ... }: {
     direnv = {
       enable = true;
       enableNushellIntegration = true;
-      nix-direnv = { enable = true; };
+      nix-direnv = {
+        enable = true;
+      };
     };
   };
 
-  programs.neovim.plugins = [ pkgs.vimPlugins.nvim-treesitter.withAllGrammars ];
+  programs.nixvim = {
+    enable = true;
+    defaultEditor = true;
+    globals.mapleader = " ";
+
+    extraPackages = with pkgs; [
+      markdownlint-cli
+      golangci-lint
+      luajitPackages.luacheck
+      clang-tools
+      typescript-language-server
+      gopls
+      luajitPackages.lua-lsp
+      svelte-language-server
+      luarocks
+    ];
+
+    opts = {
+      number = true;
+      mouse = "a";
+      showmode = false;
+      clipboard = "unnamedplus";
+      breakindent = true;
+      undofile = true;
+      ignorecase = true;
+      smartcase = true;
+      signcolumn = "yes";
+      updatetime = 250;
+      timeoutlen = 300;
+      splitright = true;
+      splitbelow = true;
+      listchars = {
+        tab = "» ";
+        trail = "·";
+        nbsp = "␣";
+      };
+      inccommand = "split";
+      cursorline = true;
+      scrolloff = 10;
+      confirm = true;
+    };
+    diagnostic.settings = {
+      update_in_insert = false;
+      severity_sort = true;
+      float = {
+        border = "rounded";
+        source = "if_many";
+      };
+      virtual_text = true;
+      virtual_lines = false;
+      jump = {
+        float = true;
+      };
+    };
+
+    keymaps = [
+      {
+        mode = [
+          "n"
+          "v"
+        ];
+        key = "<M-Enter>";
+        action.__raw = "require('actions-preview').code_actions";
+        options.desc = "Code Actions Preview";
+      }
+      {
+        mode = "n";
+        key = "<M-2>";
+        action.__raw = "require('oil').open";
+        options.desc = "Open Oil File Browser";
+      }
+      {
+        mode = "n";
+        key = "gr";
+        action.__raw = ''function() return ":IncRename " .. vim.fn.expand("<cword>") end'';
+        options = {
+          expr = true;
+          desc = "Incremental Rename";
+        };
+      }
+      {
+        mode = "n";
+        key = "<Esc>";
+        action = "<cmd>nohlsearch<CR>";
+      }
+
+      {
+        mode = "n";
+        key = "<leader>q";
+        action.__raw = "vim.diagnostic.setloclist";
+        options.desc = "Open diagnostic [Q]uickfix list";
+      }
+      {
+        mode = "n";
+        key = "T";
+        action.__raw = "function() vim.diagnostic.open_float(nil, { focus = false }) end";
+        options = {
+          silent = true;
+          noremap = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "ge";
+        action.__raw = "vim.diagnostic.goto_next";
+        options = {
+          desc = "Go to next diagnostic";
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "gE";
+        action.__raw = "vim.diagnostic.goto_prev";
+        options = {
+          desc = "Go to previous diagnostic";
+          silent = true;
+        };
+      }
+      {
+        mode = "t";
+        key = "<Esc><Esc>";
+        action = "<C-\\><C-n>";
+        options.desc = "Exit terminal mode";
+      }
+      {
+        mode = "n";
+        key = "<C-h>";
+        action = "<C-w><C-h>";
+        options.desc = "Move focus to the left window";
+      }
+      {
+        mode = "n";
+        key = "<C-l>";
+        action = "<C-w><C-l>";
+        options.desc = "Move focus to the right window";
+      }
+      {
+        mode = "n";
+        key = "<C-j>";
+        action = "<C-w><C-j>";
+        options.desc = "Move focus to the lower window";
+      }
+      {
+        mode = "n";
+        key = "<C-k>";
+        action = "<C-w><C-k>";
+        options.desc = "Move focus to the upper window";
+      }
+      {
+        mode = "n";
+        key = "<leader>ww";
+        action = ":winc w<cr>";
+        options.silent = true;
+      }
+
+      # Visual Mode Line Moving
+      {
+        mode = "v";
+        key = "J";
+        action = ":m '>+1<CR>gv=gv";
+        options.silent = true;
+      }
+      {
+        mode = "v";
+        key = "K";
+        action = ":m '<-2<CR>gv=gv";
+        options.silent = true;
+      }
+
+      # Keep search results centered
+      {
+        mode = "n";
+        key = "n";
+        action = "nzzzv";
+      }
+      {
+        mode = "n";
+        key = "N";
+        action = "Nzzzv";
+      }
+    ];
+
+    autoGroups = {
+      kickstart-highlight-yank = {
+        clear = true;
+      };
+      lint.clear = true;
+    };
+
+    autoCmd = [
+      {
+        event = "TextYankPost";
+        group = "kickstart-highlight-yank";
+        desc = "Highlight when yanking (copying) text";
+        callback.__raw = "function() vim.hl.on_yank() end";
+      }
+    ];
+
+    colorschemes.onedark = {
+      enable = true;
+      settings = {
+        style = "darker";
+      };
+    };
+
+    plugins = {
+      web-devicons.enable = true;
+      treesitter.enable = true;
+      nvim-autopairs.enable = true;
+      guess-indent.enable = true;
+      todo-comments.enable = true;
+      fidget.enable = true;
+      plenary.enable = true;
+      indent-blankline.enable = true;
+      nui.enable = true;
+      ts-autotag.enable = true;
+      sleuth.enable = true;
+      crates.enable = true;
+      inc-rename.enable = true;
+      hlargs.enable = true;
+      nvim-scrollbar.enable = true;
+      oil.enable = true;
+      barbecue.enable = true;
+      lastplace.enable = true;
+      illuminate = {
+        enable = true;
+        under_cursor = false;
+        filetypes_denylist = [ "NvimTree" ];
+      };
+
+      codesnap = {
+        enable = true;
+        settings = {
+          has_breadcrumbs = false;
+          has_line_number = true;
+          watermark = "";
+        };
+      };
+
+      markdown-preview = {
+        enable = true;
+      };
+
+      actions-preview = {
+        enable = true;
+        settings = {
+          highlight_command = [
+            {
+              __raw = "require('actions-preview.highlight').delta 'delta --side-by-side'";
+            }
+            { __raw = "require('actions-preview.highlight').diff_so_fancy()"; }
+
+            {
+              __raw = "require('actions-preview.highlight').diff_highlight()";
+            }
+          ];
+          telescope = {
+            layout_config = {
+              height = 0.9;
+              preview_cutoff = 20;
+              preview_height = {
+                __raw = ''
+                  function(_, _, max_lines)
+                    return max_lines - 15
+                  end
+                '';
+              };
+              prompt_position = "top";
+              width = 0.8;
+            };
+            layout_strategy = "vertical";
+            sorting_strategy = "ascending";
+          };
+        };
+
+      };
+
+      telescope = {
+        enable = true;
+        extensions = {
+          fzf-native.enable = true;
+          ui-select = {
+            enable = true;
+            settings = {
+              __raw = "require('telescope.themes').get_dropdown()";
+            };
+          };
+        };
+        keymaps = {
+          "<leader>?" = {
+            action = "oldfiles";
+            options.desc = "[?] Find recently opened files";
+          };
+          "<leader>b" = {
+            action = "buffers";
+            options.desc = "[b] Find existing buffers";
+          };
+          "<leader>ss" = {
+            action = "builtin";
+            options.desc = "[S]earch [S]elect Telescope";
+          };
+          "<leader>gf" = {
+            action = "git_files";
+            options.desc = "Search [G]it [F]iles";
+          };
+          "<leader>ff" = {
+            action = "find_files";
+            options.desc = "[F]ind [F]iles";
+          };
+          "<leader>sh" = {
+            action = "help_tags";
+            options.desc = "[S]earch [H]elp";
+          };
+          "<leader>sw" = {
+            action = "grep_string";
+            options.desc = "[S]earch current [W]ord";
+          };
+          "<leader>ps" = {
+            action = "live_grep";
+            options.desc = "Project search";
+          };
+          "<leader>sd" = {
+            action = "diagnostics";
+            options.desc = "[S]earch [D]iagnostics";
+          };
+          "<leader>sr" = {
+            action = "resume";
+            options.desc = "[S]earch [R]esume";
+          };
+          "gd" = {
+            action = "lsp_definitions";
+            options.desc = "[G]o to [D]efinition";
+          };
+        };
+        extraConfigLua = ''
+          local builtin = require('telescope.builtin')
+
+          -- Fuzzily search in current buffer with specific theme
+          vim.keymap.set('n', '<leader>/', function()
+            builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+              winblend = 10,
+              previewer = false,
+            })
+          end, { desc = '[/] Fuzzily search in current buffer' })
+
+          -- Live Grep in Open Files
+          vim.keymap.set('n', '<leader>s/', function()
+            builtin.live_grep {
+              grep_open_files = true,
+              prompt_title = 'Live Grep in Open Files',
+            }
+          end, { desc = '[S]earch [/] in Open Files' })
+
+          -- Search Neovim files (adapted for NixOS/Nixvim config path)
+          vim.keymap.set('n', '<leader>sn', function() 
+            builtin.find_files { cwd = vim.fn.stdpath 'config' } 
+          end, { desc = '[S]earch [N]eovim files' })
+        '';
+
+        autoCmd = [
+          {
+            event = "LspAttach";
+            callback.__raw = ''
+              function(event)
+                local opts = { buffer = event.buf }
+                local builtin = require('telescope.builtin')
+
+                vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = event.buf, desc = '[G]oto [R]eferences' })
+                vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = event.buf, desc = '[G]oto [I]mplementation' })
+                vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = event.buf, desc = 'Open Document Symbols' })
+                vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = event.buf, desc = 'Open Workspace Symbols' })
+                vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = event.buf, desc = '[G]oto [T]ype Definition' })
+              end
+            '';
+          }
+        ];
+      };
+
+      lint = {
+        enable = true;
+        lintersByFt = {
+          markdown = [ "markdownlint" ];
+          go = [ "golancilint" ];
+          lua = [ "luacheck" ];
+          json = [ "jsonlint" ];
+          c = [ "clangtidy" ];
+        };
+
+        autoCmd = {
+          event = [
+            "BufEnter"
+            "BufWritePost"
+            "InsertLeave"
+          ];
+          group = "lint";
+          callback.__raw = ''
+            function()
+              -- Only run the linter in buffers that you can modify
+              if vim.bo.modifiable then
+                require('lint').try_lint()
+              end
+            end
+          '';
+        };
+      };
+
+      gitsigns = {
+        enable = true;
+        settings = {
+          signs = {
+            add = {
+              text = "+";
+            };
+            change = {
+              text = "~";
+            };
+            delete = {
+              text = "_";
+            };
+            topdelete = {
+              text = "‾";
+            };
+            changedelete = {
+              text = "~";
+            };
+          };
+        };
+      };
+
+      which-key = {
+        enable = true;
+        settings = {
+          delay = 200;
+        };
+      };
+
+      conform-nvim = {
+        enable = true;
+        settings = {
+          notify_on_error = false;
+
+          format_on_save = ''
+            function(bufnr)
+              return {
+                timeout_ms = 500,
+                lsp_format = "fallback",
+              }
+            end
+          '';
+
+          formatters_by_ft = {
+            lua = [ "stylua" ];
+            javascript = [ "biome" ];
+            typescript = [ "biome" ];
+            css = [ "biome" ];
+            typescriptreact = [ "biome" ];
+            svelte = [ "biome" ];
+            rust = [ "rustfmt" ];
+            go = [
+              "goimports"
+              "gofmt"
+            ];
+            c = [ "clang-format" ];
+            cpp = [ "clang-format" ];
+            json = [ "fixjson" ];
+            nix = [ "nixfmt" ];
+          };
+        };
+      };
+      lsp = {
+        enable = true;
+        servers.nil_ls.enable = true;
+        servers.rust_analyzer = {
+          enable = true;
+          installCargo = true;
+          installRustc = true;
+          settings = {
+            checkOnSave = true;
+            check = {
+              command = "clippy";
+            };
+            procMacro = {
+              enable = true;
+            };
+          };
+        };
+        server.gopls.enable = true;
+        server.ts_ls.enable = true;
+        server.lua_ls.enable = true;
+        server.svelte.enable = true;
+        server.clangd.enable = true;
+      };
+      luasnip = {
+        enable = true;
+        fromVscode = [ { } ];
+      };
+
+      mini = {
+        enable = true;
+        modules = {
+          ai = {
+            n_lines = 500;
+          };
+          surround = { };
+          statusline.use_icons = true;
+        };
+        extraConfigLua = ''
+          require('mini.statusline').section_location = function() 
+            return '%2l:%-2v' 
+          end
+        '';
+      };
+
+      blink-cmp = {
+        enable = true;
+        settings = {
+          keymap = {
+            preset = "enter";
+          };
+          appearance = {
+            nerd_font_variant = "mono";
+          };
+          completion = {
+            documentation = {
+              auto_show = false;
+              auto_show_delay_ms = 500;
+            };
+          };
+          sources = {
+            default = [
+              "lsp"
+              "path"
+              "snippets"
+              "buffer"
+            ];
+          };
+          snippets = {
+            preset = "luasnip";
+          };
+          fuzzy = {
+            implementation = "lua";
+          };
+          signature = {
+            enabled = true;
+            window = {
+              border = "rounded";
+              scrollbar = true;
+            };
+          };
+        };
+      };
+    };
+
+  };
 }
