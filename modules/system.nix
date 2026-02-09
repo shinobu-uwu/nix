@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     git
     ripgrep
@@ -43,6 +44,7 @@
     quickemu
     playerctl
     yt-dlp
+    seahorse
   ];
   fonts = {
     enableDefaultPackages = true;

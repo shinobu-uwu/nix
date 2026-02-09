@@ -1073,6 +1073,10 @@ in
             action = "lsp_definitions";
             options.desc = "[G]o to [D]efinition";
           };
+          "vu" = {
+            action = "lsp_references";
+            options.desc = "[V]iew [U]sages";
+          };
         };
         extraConfigLua = ''
           local builtin = require('telescope.builtin')
@@ -1107,7 +1111,6 @@ in
                 local opts = { buffer = event.buf }
                 local builtin = require('telescope.builtin')
 
-                vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = event.buf, desc = '[G]oto [R]eferences' })
                 vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = event.buf, desc = '[G]oto [I]mplementation' })
                 vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = event.buf, desc = 'Open Document Symbols' })
                 vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = event.buf, desc = 'Open Workspace Symbols' })

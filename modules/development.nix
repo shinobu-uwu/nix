@@ -9,5 +9,6 @@
     gdb
     xh
     opencode
+    cargo-generate
   ];
 }

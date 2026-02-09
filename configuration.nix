@@ -2,8 +2,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }: {
-  imports = [ # Include the results of the hardware scan.
+{ pkgs, ... }:
+{
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./modules/system.nix
     ./modules/niri.nix
@@ -125,17 +127,24 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   security.rtkit.enable = true;
-  services.pulseaudio = { enable = false; };
+  services.pulseaudio = {
+    enable = false;
+  };
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-    wireplumber = { enable = true; };
+    wireplumber = {
+      enable = true;
+    };
   };
 
   programs.niri.enable = true;
@@ -157,17 +166,6 @@
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
   };
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    stdenv.cc.cc
-    zlib
-    fuse3
-    icu
-    nss
-    openssl
-    curl
-    expat
-  ];
 
   hardware.opentabletdriver.enable = true;
   hardware.logitech.wireless.enable = true;
