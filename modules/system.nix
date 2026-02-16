@@ -45,6 +45,7 @@
     playerctl
     yt-dlp
     seahorse
+    impala
   ];
   fonts = {
     enableDefaultPackages = true;

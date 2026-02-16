@@ -947,7 +947,17 @@ in
 
     plugins = {
       web-devicons.enable = true;
-      treesitter.enable = true;
+      treesitter = {
+        enable = true;
+        settings = {
+          highlight = {
+            enable = true;
+          };
+          indent = {
+            enable = true;
+          };
+        };
+      };
       nvim-autopairs.enable = true;
       guess-indent.enable = true;
       todo-comments.enable = true;
@@ -1125,7 +1135,7 @@ in
         enable = true;
         lintersByFt = {
           markdown = [ "markdownlint" ];
-          go = [ "golancilint" ];
+          go = [ "golangcilint" ];
           lua = [ "luacheck" ];
           json = [ "jsonlint" ];
           c = [ "clangtidy" ];
@@ -1214,26 +1224,30 @@ in
       };
       lsp = {
         enable = true;
-        servers.nil_ls.enable = true;
-        servers.rust_analyzer = {
-          enable = true;
-          installCargo = true;
-          installRustc = true;
-          settings = {
-            checkOnSave = true;
-            check = {
-              command = "clippy";
-            };
-            procMacro = {
-              enable = true;
+        inlayHints = false;
+        grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
+        servers = {
+          nil_ls.enable = true;
+          rust_analyzer = {
+            enable = true;
+            installCargo = false;
+            installRustc = false;
+            settings = {
+              checkOnSave = true;
+              check = {
+                command = "clippy";
+              };
+              procMacro = {
+                enable = true;
+              };
             };
           };
+          gopls.enable = true;
+          ts_ls.enable = true;
+          lua_ls.enable = true;
+          svelte.enable = true;
+          clangd.enable = true;
         };
-        server.gopls.enable = true;
-        server.ts_ls.enable = true;
-        server.lua_ls.enable = true;
-        server.svelte.enable = true;
-        server.clangd.enable = true;
       };
       luasnip = {
         enable = true;
@@ -1263,12 +1277,21 @@ in
             preset = "enter";
           };
           appearance = {
+            use_nvim_cmp_as_default = true;
             nerd_font_variant = "mono";
           };
           completion = {
+            menu = {
+              draw = {
+                columns = [
+                  { __raw = "{ 'label', 'label_description', 'kind_icon', gap = 1 }"; }
+                  { __raw = "{ 'kind' }"; }
+                ];
+              };
+            };
             documentation = {
-              auto_show = false;
-              auto_show_delay_ms = 500;
+              auto_show = true;
+              auto_show_delay_ms = 200;
             };
           };
           sources = {
@@ -1276,7 +1299,6 @@ in
               "lsp"
               "path"
               "snippets"
-              "buffer"
             ];
           };
           snippets = {
