@@ -46,6 +46,7 @@
     yt-dlp
     seahorse
     impala
+    krita
   ];
   fonts = {
     enableDefaultPackages = true;

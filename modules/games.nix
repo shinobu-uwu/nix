@@ -1,9 +1,10 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
-    wineWowPackages.stable
-    wineWowPackages.staging
-    winetricks
-    wineWowPackages.waylandFull
+    # wineWowPackages.stable
+    # wineWowPackages.staging
+    # winetricks
+    # wineWowPackages.waylandFull
     steam
     gamemode
     osu-lazer-bin
