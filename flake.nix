@@ -9,7 +9,6 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -18,10 +17,19 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plugged.url = "github:shinobu-uwu/plugged";
   };
 
-  outputs = { nixpkgs, niri, home-manager, alacritty-theme, rust-overlay, ...
-    }@inputs: {
+  outputs =
+    {
+      nixpkgs,
+      niri,
+      home-manager,
+      alacritty-theme,
+      rust-overlay,
+      ...
+    }@inputs:
+    {
 
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -29,25 +37,36 @@
         modules = [
           ./configuration.nix
           niri.nixosModules.niri
-          ({ config, pkgs, ... }: {
-            nixpkgs.overlays = [ alacritty-theme.overlays.default ];
-          })
-          ({ pkgs, ... }: {
-            nixpkgs.overlays = [ rust-overlay.overlays.default ];
-            environment.systemPackages =
-              [ pkgs.rust-bin.stable.latest.default ];
-          })
+          (
+            { config, pkgs, ... }:
+            {
+              nixpkgs.overlays = [ alacritty-theme.overlays.default ];
+            }
+          )
+          (
+            { pkgs, ... }:
+            {
+              nixpkgs.overlays = [ rust-overlay.overlays.default ];
+              environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
+            }
+          )
         ];
       };
       homeConfigurations."shinobu" = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           system = "x86_64-linux";
           config.allowUnfree = true;
-          overlays =
-            [ alacritty-theme.overlays.default rust-overlay.overlays.default ];
+          overlays = [
+            alacritty-theme.overlays.default
+            rust-overlay.overlays.default
+          ];
         };
         extraSpecialArgs = { inherit inputs; };
-        modules = [ ./home.nix inputs.niri.homeModules.niri ];
+        modules = [
+          ./home.nix
+          inputs.niri.homeModules.niri
+          inputs.plugged.homeManagerModules.default
+        ];
       };
     };
 }

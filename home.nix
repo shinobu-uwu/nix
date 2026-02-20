@@ -31,6 +31,16 @@ in
   home.stateVersion = "25.11";
   imports = [ inputs.nixvim.homeModules.nixvim ];
 
+  services.plugged = {
+    enable = true;
+    settings = {
+      sounds = {
+        connected = ./assets/connected.oga;
+        disconnected = ./assets/disconnected.oga;
+      };
+    };
+  };
+
   services.swayidle =
     let
       lock = "${pkgs.swaylock}/bin/swaylock --daemonize";
@@ -1222,6 +1232,7 @@ in
           };
         };
       };
+
       lsp = {
         enable = true;
         inlayHints = false;
@@ -1233,7 +1244,6 @@ in
             installCargo = false;
             installRustc = false;
             settings = {
-              checkOnSave = true;
               check = {
                 command = "clippy";
               };
