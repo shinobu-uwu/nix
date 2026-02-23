@@ -1229,6 +1229,7 @@ in
             cpp = [ "clang-format" ];
             json = [ "fixjson" ];
             nix = [ "nixfmt" ];
+            markdown = [ "markdownfmt" ];
           };
         };
       };

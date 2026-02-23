@@ -47,6 +47,7 @@
     seahorse
     impala
     krita
+    feh
   ];
   fonts = {
     enableDefaultPackages = true;
