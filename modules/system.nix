@@ -46,7 +46,6 @@
     yt-dlp
     seahorse
     impala
-    krita
     feh
   ];
   fonts = {

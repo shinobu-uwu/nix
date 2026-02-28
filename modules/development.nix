@@ -10,5 +10,8 @@
     xh
     opencode
     cargo-generate
+    jetbrains.rider
+    hyperfine
+    codex
   ];
 }

@@ -35,8 +35,12 @@ in
     enable = true;
     settings = {
       sounds = {
+        enable = true;
         connected = ./assets/connected.oga;
         disconnected = ./assets/disconnected.oga;
+      };
+      notifications = {
+        enable = true;
       };
     };
   };
@@ -1144,10 +1148,10 @@ in
       lint = {
         enable = true;
         lintersByFt = {
-          markdown = [ "markdownlint" ];
           go = [ "golangcilint" ];
           lua = [ "luacheck" ];
           json = [ "jsonlint" ];
+          markdown = [ "vale" ];
           c = [ "clangtidy" ];
         };
 
