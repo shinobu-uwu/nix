@@ -14,5 +14,6 @@
     hyperfine
     codex
     llmfit
+    jq
   ];
 }
