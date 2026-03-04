@@ -506,10 +506,10 @@ in
         mode = {
           width = 1920;
           height = 1080;
-          refresh = 144.0;
+          refresh = 60.0;
         };
         position = {
-          x = 3840;
+          x = 0;
           y = 0;
         };
       };
@@ -520,7 +520,7 @@ in
           refresh = 60.0;
         };
         position = {
-          x = 0;
+          x = 3840;
           y = 0;
         };
       };
@@ -793,6 +793,9 @@ in
       cursorline = true;
       scrolloff = 10;
       confirm = true;
+      tabstop = 2;
+      shiftwidth = 2;
+      softtabstop = 2;
     };
     diagnostic.settings = {
       update_in_insert = false;

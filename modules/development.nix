@@ -13,5 +13,6 @@
     jetbrains.rider
     hyperfine
     codex
+    llmfit
   ];
 }

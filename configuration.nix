@@ -176,7 +176,10 @@
     enable = true;
     enable32Bit = true;
   };
-  hardware.amdgpu.initrd.enable = true;
+  hardware.amdgpu = {
+    initrd.enable = true;
+    opencl.enable = true;
+  };
 
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = [ "multi-user.target" ];
