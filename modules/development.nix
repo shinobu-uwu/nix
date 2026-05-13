@@ -4,6 +4,7 @@
     python3
     lua
     bun
+    nodejs
     lazygit
     gh
     gdb
@@ -14,6 +15,7 @@
     hyperfine
     codex
     llmfit
+    ollama
     jq
   ];
 }

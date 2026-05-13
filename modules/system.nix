@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     git
     ripgrep
@@ -15,6 +14,7 @@
     clang
     zip
     unzip
+    unrar
     mpv
     bat
     eza
@@ -28,7 +28,6 @@
     linuxHeaders
     lm_sensors
     lshw
-    neofetch
     pavucontrol
     speedtest-cli
     sqlite
@@ -48,6 +47,8 @@
     impala
     feh
     krita
+    rclone
+    bluetui
   ];
   fonts = {
     enableDefaultPackages = true;
@@ -64,9 +65,9 @@
     ];
 
     fontconfig.defaultFonts = {
-      serif = [ "Noto Serif" ];
-      sansSerif = [ "Lexend Deca" ];
-      monospace = [ "JetBrainsMono Nerd Font" ];
+      serif = ["Noto Serif"];
+      sansSerif = ["Lexend Deca"];
+      monospace = ["JetBrainsMono Nerd Font"];
     };
   };
 }

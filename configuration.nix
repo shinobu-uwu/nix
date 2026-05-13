@@ -1,9 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -26,7 +24,7 @@
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  hardware.firmware = [ pkgs.linux-firmware ];
+  hardware.firmware = [pkgs.linux-firmware];
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -42,18 +40,30 @@
   time.timeZone = "America/Sao_Paulo";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "pt_BR.UTF-8";
-    LC_IDENTIFICATION = "pt_BR.UTF-8";
-    LC_MEASUREMENT = "pt_BR.UTF-8";
-    LC_MONETARY = "pt_BR.UTF-8";
-    LC_NAME = "pt_BR.UTF-8";
-    LC_NUMERIC = "pt_BR.UTF-8";
-    LC_PAPER = "pt_BR.UTF-8";
-    LC_TELEPHONE = "pt_BR.UTF-8";
-    LC_TIME = "pt_BR.UTF-8";
+  i18n = {
+    inputMethod = {
+      enable = true;
+      type = "fcitx5";
+      fcitx5 = {
+        waylandFrontend = true;
+        addons = with pkgs; [
+          fcitx5-gtk
+          qt6Packages.fcitx5-configtool
+        ];
+      };
+    };
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "pt_BR.UTF-8";
+      LC_IDENTIFICATION = "pt_BR.UTF-8";
+      LC_MEASUREMENT = "pt_BR.UTF-8";
+      LC_MONETARY = "pt_BR.UTF-8";
+      LC_NAME = "pt_BR.UTF-8";
+      LC_NUMERIC = "pt_BR.UTF-8";
+      LC_PAPER = "pt_BR.UTF-8";
+      LC_TELEPHONE = "pt_BR.UTF-8";
+      LC_TIME = "pt_BR.UTF-8";
+    };
   };
 
   # Configure keymap in X11
@@ -65,7 +75,7 @@
   # Configure console keymap
   console.keyMap = "us-acentos";
 
-  environment.shells = [ pkgs.nushell ];
+  environment.shells = [pkgs.nushell];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.shinobu = {
@@ -80,6 +90,7 @@
       "users"
       "libvirtd"
       "kvm"
+      "dialout"
     ];
     shell = pkgs.nushell;
   };
@@ -133,6 +144,12 @@
   ];
 
   security.rtkit.enable = true;
+  security.sudo = {
+    enable = true;
+    extraConfig = ''
+      Defaults passwd_timeout=0
+    '';
+  };
   services.pulseaudio = {
     enable = false;
   };
@@ -164,14 +181,14 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+    extraPortals = [pkgs.xdg-desktop-portal-gnome];
   };
 
   hardware.opentabletdriver.enable = true;
   hardware.logitech.wireless.enable = true;
   hardware.logitech.wireless.enableGraphical = true;
   hardware.uinput.enable = true;
-  boot.kernelModules = [ "uinput" ];
+  boot.kernelModules = ["uinput"];
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -181,11 +198,11 @@
     opencl.enable = true;
   };
 
-  systemd.packages = with pkgs; [ lact ];
-  systemd.services.lactd.wantedBy = [ "multi-user.target" ];
+  systemd.packages = with pkgs; [lact];
+  systemd.services.lactd.wantedBy = ["multi-user.target"];
   systemd.user.services.playerctld = {
     description = "playerctl daemon";
-    wantedBy = [ "default.target" ];
+    wantedBy = ["default.target"];
     serviceConfig = {
       ExecStart = "${pkgs.playerctl}/bin/playerctld";
       Restart = "on-failure";
@@ -194,4 +211,12 @@
 
   services.gvfs.enable = true;
   services.upower.enable = true;
+
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+  hardware.bluetooth.settings = {
+    General = {
+      Experimental = true;
+    };
+  };
 }

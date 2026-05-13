@@ -20,53 +20,51 @@
     plugged.url = "github:shinobu-uwu/plugged";
   };
 
-  outputs =
-    {
-      nixpkgs,
-      niri,
-      home-manager,
-      alacritty-theme,
-      rust-overlay,
-      ...
-    }@inputs:
-    {
-
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./configuration.nix
-          niri.nixosModules.niri
-          (
-            { config, pkgs, ... }:
-            {
-              nixpkgs.overlays = [ alacritty-theme.overlays.default ];
-            }
-          )
-          (
-            { pkgs, ... }:
-            {
-              nixpkgs.overlays = [ rust-overlay.overlays.default ];
-              environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
-            }
-          )
-        ];
-      };
-      homeConfigurations."shinobu" = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-          overlays = [
-            alacritty-theme.overlays.default
-            rust-overlay.overlays.default
-          ];
-        };
-        extraSpecialArgs = { inherit inputs; };
-        modules = [
-          ./home.nix
-          inputs.niri.homeModules.niri
-          inputs.plugged.homeManagerModules.default
-        ];
-      };
+  outputs = {
+    nixpkgs,
+    niri,
+    home-manager,
+    alacritty-theme,
+    rust-overlay,
+    ...
+  } @ inputs: {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = {inherit inputs;};
+      modules = [
+        ./configuration.nix
+        niri.nixosModules.niri
+        (
+          {
+            config,
+            pkgs,
+            ...
+          }: {
+            environment.systemPackages = [pkgs.rust-bin.stable.latest.default];
+            nixpkgs.overlays = [
+              alacritty-theme.overlays.default
+              rust-overlay.overlays.default
+              niri.overlays.niri
+            ];
+          }
+        )
+      ];
     };
+    homeConfigurations."shinobu" = home-manager.lib.homeManagerConfiguration {
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+        overlays = [
+          alacritty-theme.overlays.default
+          rust-overlay.overlays.default
+        ];
+      };
+      extraSpecialArgs = {inherit inputs;};
+      modules = [
+        ./home.nix
+        inputs.niri.homeModules.niri
+        inputs.plugged.homeManagerModules.default
+      ];
+    };
+  };
 }
