@@ -28,11 +28,6 @@ in
     home.homeDirectory = "/home/shinobu";
     home.stateVersion = "25.11";
     imports = [inputs.nixvim.homeModules.nixvim];
-    home.file.".XCompose".text = ''
-      include "/usr/share/X11/locale/en_US.UTF-8/Compose"
-      <dead_acute> <c> : "ç" U00e7
-      <dead_acute> <C> : "Ç" U00c7
-    '';
 
     services.mpris-proxy.enable = true;
     services.wl-clip-persist.enable = true;
@@ -143,7 +138,6 @@ in
       GTK_IM_MODULE = "fcitx";
       QT_IM_MODULE = "fcitx";
       XMODIFIERS = "@im=fcitx";
-      XCOMPOSEFILE = "${config.home.homeDirectory}/.XCompose";
     };
 
     nixpkgs.config.allowUnfree = true;
@@ -625,6 +619,7 @@ in
         settings = {
           theme = "Dracula";
           font-size = 14;
+          font-feature = "-calt, -liga, -dlig";
           font-family = "JetBrainsMono Nerd Font";
           command = "tmux new-session -A -s ghostty";
           confirm-close-surface = false;
