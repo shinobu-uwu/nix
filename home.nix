@@ -21,13 +21,14 @@ in
     inputs,
     pkgs,
     lib,
-    config,
     ...
   }: {
     home.username = "shinobu";
     home.homeDirectory = "/home/shinobu";
     home.stateVersion = "25.11";
-    imports = [inputs.nixvim.homeModules.nixvim];
+    imports = [
+      inputs.nixvim.homeModules.nixvim
+    ];
 
     services.mpris-proxy.enable = true;
     services.wl-clip-persist.enable = true;

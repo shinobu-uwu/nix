@@ -7,6 +7,7 @@
     alacritty
     firefox
     google-chrome
+    stremio-linux-shell
     btop
     wl-clipboard
     gnumake
