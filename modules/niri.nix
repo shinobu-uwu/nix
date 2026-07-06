@@ -1,11 +1,5 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    waybar
-    fuzzel
-    mako
-    swaybg
-    swayidle
-    swaylock
     dracula-theme
     dracula-icon-theme
     bibata-cursors
@@ -29,11 +23,10 @@
   };
   xdg.portal = {
     enable = true;
-    extraPortals =
-      [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk];
     config = {
-      common.default = [ "gtk" ];
-      niri.default = [ "gnome" "gtk" ];
+      common.default = ["gtk"];
+      niri.default = ["gnome" "gtk"];
     };
   };
 }

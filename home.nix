@@ -22,11 +22,14 @@ in
     pkgs,
     lib,
     ...
-  }: {
+  }: let
+    noctalia = pkgs.callPackage (inputs.noctalia + "/nix/package.nix") {};
+  in {
     home.username = "shinobu";
     home.homeDirectory = "/home/shinobu";
     home.stateVersion = "25.11";
     imports = [
+      ./modules/noctalia.nix
       inputs.nixvim.homeModules.nixvim
     ];
 
@@ -42,76 +45,6 @@ in
         };
         notifications = {
           enable = true;
-        };
-      };
-    };
-
-    services.swayidle = let
-      lock = "${pkgs.swaylock}/bin/swaylock --daemonize";
-      display = status: "${pkgs.niri}/bin/niri msg action power-${status}-monitors";
-    in {
-      enable = true;
-      timeouts = [
-        {
-          timeout = 60 * 15;
-          command = lock;
-        }
-        {
-          timeout = 60 * 20;
-          command = display "off";
-          resumeCommand = display "on";
-        }
-        {
-          timeout = 60 * 25;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-      events = [
-        {
-          event = "before-sleep";
-          # adding duplicated entries for the same event may not work
-          command = (display "off") + "; " + lock;
-        }
-        {
-          event = "after-resume";
-          command = display "on";
-        }
-        {
-          event = "lock";
-          command = (display "off") + "; " + lock;
-        }
-        {
-          event = "unlock";
-          command = display "on";
-        }
-      ];
-    };
-
-    services.mako = {
-      enable = true;
-      settings = {
-        background-color = "#282a36";
-        text-color = "#f8f8f2";
-        border-color = "#44475a";
-        progress-color = "#ff5555";
-        default-timeout = 5000;
-        ignore-timeout = false;
-        max-visible = 5;
-        actions = true;
-      };
-    };
-
-    programs.fuzzel = {
-      enable = true;
-      settings = {
-        colors = {
-          background = "#282a36dd";
-          text = "#f8f8f2ff";
-          match = "#8be9fdff";
-          selection-match = "#8be9fdff";
-          selection = "#44475add";
-          selection-text = "#f8f8f2ff";
-          border = "#bd93f9ff";
         };
       };
     };
@@ -173,249 +106,16 @@ in
       gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
     };
 
-    programs.waybar = {
-      enable = true;
-      settings = {
-        mainBar = {
-          layer = "top";
-          margin-top = 4;
-          position = "top";
-          modules-left = [
-            "niri/workspaces"
-            "pulseaudio"
-            "mpris"
-          ];
-          modules-center = ["niri/window"];
-          modules-right = [
-            "cpu"
-            "memory"
-            "clock"
-          ];
-          "niri/workspaces" = {
-            format = "{icon}";
-            format-icons = {
-              "1" = "1";
-              "2" = "2";
-              "3" = "3";
-              "4" = "4";
-              "5" = "5";
-              "6" = "6";
-              "7" = "7";
-              "8" = "8";
-              "9" = "9";
-              "chats" = "";
-              "default" = "";
-            };
-          };
-          "niri/window" = {
-            separate-outputs = true;
-            max-length = 40;
-          };
-          "pulseaudio" = {
-            format = ''<span size="large" rise="-1pt">{icon}</span>  {volume}%'';
-            format-muted = "󰝟";
-            format-icons = {
-              default = [
-                "󰕿"
-                "󰖀"
-                "󰕾"
-              ];
-            };
-          };
-          "cpu" = {
-            interval = 1;
-            format = ''<span size="large" rise="-1pt"></span>  {usage}%'';
-          };
-          "mpris" = {
-            format = "{player_icon} {dynamic}";
-            format-paused = "{status_icon} <i>{dynamic}</i>";
-            dynamic-order = [
-              "artist"
-              "title"
-            ];
-            dynamic-len = 15;
-            player-icons = {
-              default = "▶";
-              chromium = "";
-              firefox = "󰈹";
-              mpv = "";
-            };
-            status-icons = {
-              paused = "";
-            };
-          };
-          "memory" = {
-            interval = 5;
-            format = "  {used:0.1f}G";
-          };
-          "battery" = {
-            format = ''<span size="large" rise="-1pt">{icon}</span> {capacity}%'';
-            format-icons = [
-              "󰁺"
-              "󰁻"
-              "󰁼"
-              "󰁽"
-              "󰁾"
-              "󰁿"
-              "󰂀"
-              "󰂁"
-              "󰂂"
-              "󰁹"
-            ];
-            format-charging = ''<span size="large" rise="-1pt">󰂅</span>  {capacity}%'';
-          };
-          "backlight" = {
-            format = ''<span size="large" rise="-1pt">{icon}</span>  {percent}%'';
-            format-icons = [
-              "󰃚"
-              "󰃛"
-              "󰃜"
-              "󰃝"
-              "󰃞"
-              "󰃟"
-              "󰃠"
-            ];
-          };
-          "network" = {
-            format-wifi = ''<span size="large" rise="-1pt"></span>  {essid}'';
-            max-length = 12;
-          };
-          "clock" = {
-            format = ''<span size="large" rise="-1pt"></span>  {:%H:%M}'';
-          };
-        };
-      };
-      style = ''
-        @define-color background #282a36;
-        @define-color foreground #f8f8f2;
-        @define-color grey #44475a;
-        @define-color yellow #f1fa8c;
-        @define-color blue #6272a4;
-        @define-color cyan #8be9fd;
-        @define-color green #50fa7b;
-        @define-color orange #ffb86c;
-        @define-color pink #ff79c6;
-        @define-color purple #bd93f9;
-        @define-color red #ff5555;
-
-        window#waybar {
-          opacity: 1;
-          background: transparent;
-          font-family: "Lexend Deca", "Symbols Nerd Font";
-          font-size: 16px;
-        }
-
-        /* Niri Workspaces */
-        #workspaces {
-          background-color: @purple;
-          border-radius: 20px;
-          margin: 0 5px;
-        }
-
-        #workspaces button {
-          padding: 0 12px;
-          color: @foreground;
-          background-image: linear-gradient(
-            to bottom,
-            transparent 20%,
-            @grey 20%,
-            @grey 80%,
-            transparent 80%
-          );
-          background-size: 1px 100%;
-          background-repeat: no-repeat;
-          background-position: right center;
-          border-radius: 0;
-        }
-
-        #workspaces button:last-child {
-          background-image: none;
-          border-radius: 0 20px 20px 0;
-        }
-
-        #workspaces button:first-child {
-          border-radius: 20px 0 0 20px;
-        }
-
-        #workspaces button:only-child {
-          border-radius: 20px;
-        }
-
-        #workspaces button {
-          padding: 0 8px;
-          color: @foreground;
-          border-radius: 20px;
-        }
-
-        /* Niri uses .active instead of .focused */
-        #workspaces button.active {
-          color: @green;
-        }
-
-        #workspaces button.urgent {
-          animation-duration: 0.5s;
-          animation-name: blink;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-          animation-direction: alternate;
-          color: @red;
-        }
-
-        @keyframes blink { to { color: @foreground; } }
-
-        /* Niri Window */
-        #window {
-          border-right: 10px solid @red;
-          border-left: 10px solid @red;
-          border-radius: 20px;
-          background-color: @red;
-          color: @foreground;
-        }
-
-        /* Common module styling */
-        #cpu,
-        #pulseaudio,
-        #battery,
-        #backlight,
-        #network,
-        #clock,
-        #mpris,
-        #memory {
-          padding: 0 5px;
-          margin: 0 5px;
-          border-radius: 20px;
-        }
-
-
-        #cpu { border-left: 10px solid @background; border-right: 10px solid @background; background-color: @background; }
-        #memory { border-left: 10px solid @grey; border-right: 10px solid @grey; background-color: @grey; }
-        #battery { border-left: 10px solid @blue; border-right: 10px solid @blue; background-color: @blue; }
-        #pulseaudio, #backlight { border-left: 10px solid @orange; border-right: 10px solid @orange; background-color: @orange; }
-        #network { border-left: 10px solid @pink; border-right: 10px solid @pink; background-color: @pink; }
-        #clock { border-left: 10px solid @purple; border-right: 10px solid @purple; background-color: @purple; }
-        #mpris { border-left: 10px solid @pink; border-right: 10px solid @pink; background-color: @pink; }
-      '';
-    };
-
     programs.niri.settings = {
       prefer-no-csd = true;
       spawn-at-startup = [
-        {argv = ["${pkgs.vesktop}/bin/vesktop"];}
-        {argv = ["${pkgs.waybar}/bin/waybar"];}
+        {argv = ["vesktop"];}
+        {argv = ["${noctalia}/bin/noctalia"];}
         {
           argv = [
             ''
               spawn-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
             ''
-          ];
-        }
-        {
-          argv = [
-            "${pkgs.swaybg}/bin/swaybg"
-            "-m"
-            "fill"
-            "-i"
-            "/home/shinobu/Pictures/wallpaper.jpg"
           ];
         }
       ];
@@ -483,7 +183,10 @@ in
           "Mod+C".action.focus-workspace = "chats";
           "Mod+Shift+C".action.move-column-to-workspace = "chats";
           "Mod+Return".action.spawn = "ghostty";
-          "Mod+R".action.spawn = "fuzzel";
+          "Mod+R".action.spawn = ["${noctalia}/bin/noctalia" "msg" "panel-toggle" "launcher"];
+          "Mod+P".action.spawn = ["${noctalia}/bin/noctalia" "msg" "panel-toggle" "control-center"];
+          "Mod+Shift+P".action.spawn = ["${noctalia}/bin/noctalia" "msg" "settings-open"];
+          "Mod+Escape".action.spawn = ["${noctalia}/bin/noctalia" "msg" "session" "lock"];
           "Mod+Ctrl+H".action.focus-monitor-left = [];
           "Mod+Ctrl+L".action.focus-monitor-right = [];
           "Mod+Shift+Left".action.move-column-to-monitor-left = [];

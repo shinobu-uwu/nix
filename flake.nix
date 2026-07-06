@@ -18,6 +18,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     plugged.url = "github:shinobu-uwu/plugged";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     noctalia-greeter = {
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -57,7 +61,12 @@
     homeConfigurations."shinobu" = home-manager.lib.homeManagerConfiguration {
       pkgs = import nixpkgs {
         system = "x86_64-linux";
-        config.allowUnfree = true;
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [
+            "pnpm-10.29.2"
+          ];
+        };
         overlays = [
           alacritty-theme.overlays.default
           rust-overlay.overlays.default
@@ -66,6 +75,7 @@
       extraSpecialArgs = {inherit inputs;};
       modules = [
         ./home.nix
+        inputs.noctalia.homeModules.default
         inputs.niri.homeModules.niri
         inputs.plugged.homeManagerModules.default
       ];
