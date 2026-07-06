@@ -1,7 +1,11 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -10,6 +14,8 @@
     ./modules/development.nix
     ./modules/chat.nix
     ./modules/games.nix
+
+    inputs.noctalia-greeter.nixosModules.default
   ];
 
   # Bootloader.
@@ -97,6 +103,9 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "pnpm-10.29.2"
+  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -167,14 +176,18 @@
   programs.niri.enable = true;
   services.dbus.enable = true;
   security.polkit.enable = true;
-
-  services.greetd = {
+  programs.noctalia-greeter = {
     enable = true;
+    package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
+    greeter-args = "--session niri";
     settings = {
-      default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd niri-session";
-        user = "greeter";
+      cursor = {
+        theme = "Adwaita";
+        size = 24;
+      };
+      keyboard = {
+        layout = "us";
       };
     };
   };

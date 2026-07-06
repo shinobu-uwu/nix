@@ -48,6 +48,7 @@
     impala
     feh
     krita
+    gimp
     rclone
     bluetui
   ];

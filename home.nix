@@ -1057,6 +1057,20 @@ in
           desc = "Highlight when yanking (copying) text";
           callback.__raw = "function() vim.hl.on_yank() end";
         }
+        {
+          event = "LspAttach";
+          callback.__raw = ''
+            function(event)
+              local opts = { buffer = event.buf }
+              local builtin = require('telescope.builtin')
+
+              vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = event.buf, desc = '[G]oto [I]mplementation' })
+              vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = event.buf, desc = 'Open Document Symbols' })
+              vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = event.buf, desc = 'Open Workspace Symbols' })
+              vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = event.buf, desc = '[G]oto [T]ype Definition' })
+            end
+          '';
+        }
       ];
 
       colorschemes.onedark = {
@@ -1083,22 +1097,22 @@ in
         guess-indent.enable = true;
         todo-comments.enable = true;
         fidget.enable = true;
-        plenary.enable = true;
         indent-blankline.enable = true;
         nui.enable = true;
         ts-autotag.enable = true;
         sleuth.enable = true;
         crates.enable = true;
         inc-rename.enable = true;
-        hlargs.enable = true;
-        nvim-scrollbar.enable = true;
+        scrollview.enable = true;
         oil.enable = true;
         barbecue.enable = true;
         lastplace.enable = true;
         illuminate = {
           enable = true;
-          under_cursor = false;
-          filetypes_denylist = ["NvimTree"];
+          settings = {
+            under_cursor = false;
+            filetypes_denylist = ["NvimTree"];
+          };
         };
 
         codesnap = {
@@ -1211,7 +1225,7 @@ in
               options.desc = "[V]iew [U]sages";
             };
           };
-          extraConfigLua = ''
+          luaConfig.content = ''
             local builtin = require('telescope.builtin')
 
             -- Fuzzily search in current buffer with specific theme
@@ -1235,23 +1249,6 @@ in
               builtin.find_files { cwd = vim.fn.stdpath 'config' }
             end, { desc = '[S]earch [N]eovim files' })
           '';
-
-          autoCmd = [
-            {
-              event = "LspAttach";
-              callback.__raw = ''
-                function(event)
-                  local opts = { buffer = event.buf }
-                  local builtin = require('telescope.builtin')
-
-                  vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = event.buf, desc = '[G]oto [I]mplementation' })
-                  vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = event.buf, desc = 'Open Document Symbols' })
-                  vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = event.buf, desc = 'Open Workspace Symbols' })
-                  vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = event.buf, desc = '[G]oto [T]ype Definition' })
-                end
-              '';
-            }
-          ];
         };
 
         lint = {
@@ -1359,7 +1356,6 @@ in
         lsp = {
           enable = true;
           inlayHints = false;
-          grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
           servers = {
             nil_ls.enable = true;
             rust_analyzer = {
@@ -1399,7 +1395,7 @@ in
             surround = {};
             statusline.use_icons = true;
           };
-          extraConfigLua = ''
+          luaConfig.content = ''
             require('mini.statusline').section_location = function()
               return '%2l:%-2v'
             end
