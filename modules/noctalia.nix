@@ -10,12 +10,10 @@
       shell = {
         font_family = "Lexend Deca";
         time_format = "{:%H:%M}";
+        avatar_path = ../assets/avatar.jpg;
       };
 
-      wallpaper = {
-        directory = "~/Pictures";
-        default.path = "/home/shinobu/Pictures/wallpaper.jpg";
-      };
+      wallpaper.default.path = ../assets/wallpaper.jpg;
 
       theme = {
         mode = "dark";
@@ -26,8 +24,10 @@
       notification = {
         enable_daemon = true;
         show_actions = true;
-        background_opacity = 0.97;
+        background_opacity = 0.9;
       };
+
+      location.address = "Blumenau, SC";
 
       idle.behavior = {
         lock = {
@@ -47,33 +47,46 @@
         };
       };
 
+      widget.control-center = {
+        glyph = "bat";
+      };
+
+      widget.cpu = {
+        type = "sysmon";
+        stat = "cpu_usage";
+        glyph = "cpu";
+        display = "text";
+      };
+
+      widget.ram = {
+        type = "sysmon";
+        stat = "ram_used";
+        glyph = "server";
+      };
+
       bar.main = {
         position = "top";
-        thickness = 34;
-        background_opacity = 1.0;
-        radius = 12;
-        margin_h = 8;
-        margin_v = 4;
-        padding = 10;
-        widget_spacing = 6;
-        reserve_space = true;
+        thickness = 40;
+        radius = 8;
+        scale = 1.2;
+        background_opacity = 1;
+        margin_ends = 4;
+        margin_edge = 4;
+        padding = 8;
+        widget_spacing = 16;
+
         start = [
-          "launcher"
+          "control-center"
           "workspaces"
           "media"
         ];
-        center = ["clock"];
+        center = [];
         end = [
-          "tray"
-          "notifications"
-          "clipboard"
-          "network"
-          "bluetooth"
           "volume"
-          "brightness"
-          "battery"
-          "control-center"
-          "session"
+          "cpu"
+          "ram"
+          "clock"
+          "notifications"
         ];
       };
     };

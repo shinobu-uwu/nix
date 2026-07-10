@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    niri.url = "github:sodiboo/niri-flake";
+    niri.url = "github:epireyn/niri-flake";
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";

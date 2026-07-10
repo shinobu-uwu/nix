@@ -127,10 +127,22 @@ in
           open-on-output = "DP-2";
         };
       };
+
+      blur = {
+        passes = 2;
+        offset = 3.0;
+        noise = 0.03;
+        saturation = 1.0;
+      };
+
       window-rules = [
         {
           open-maximized = true;
           clip-to-geometry = true;
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
           geometry-corner-radius = {
             bottom-left = 8.0;
             bottom-right = 8.0;

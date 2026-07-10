@@ -183,8 +183,9 @@
     greeter-args = "--session niri";
     settings = {
       cursor = {
-        theme = "Adwaita";
+        theme = "Bibata-Modern-Ice";
         size = 24;
+        package = pkgs.bibata-cursors;
       };
       keyboard = {
         layout = "us";
