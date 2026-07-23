@@ -2,6 +2,7 @@
   environment.systemPackages = with pkgs; [
     git
     ripgrep
+    noisetorch
     wget
     curl
     alacritty
