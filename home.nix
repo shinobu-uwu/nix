@@ -48,6 +48,7 @@ in
         };
       };
     };
+    programs.prismlauncher.enable = true;
 
     programs.git = {
       enable = true;
@@ -106,17 +107,38 @@ in
       gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
     };
 
+    systemd.user.services.noctalia = {
+      Unit = {
+        Description = "Noctalia";
+        After = ["graphical-session.target"];
+        Wants = ["graphical-session.target"];
+        PartOf = ["graphical-session.target"];
+      };
+
+      Service = {
+        ExecStart = "${noctalia}/bin/noctalia";
+        Restart = "on-failure";
+      };
+
+      Install = {
+        WantedBy = ["graphical-session.target"];
+      };
+    };
+
     programs.niri.settings = {
       prefer-no-csd = true;
       spawn-at-startup = [
-        {argv = ["vesktop"];}
-        {argv = ["${noctalia}/bin/noctalia"];}
         {
           argv = [
-            ''
-              spawn-at-startup "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-            ''
+            "dbus-update-activation-environment"
+            "--systemd"
+            "DISPLAY"
+            "WAYLAND_DISPLAY"
+            "XDG_CURRENT_DESKTOP"
           ];
+        }
+        {
+          argv = ["vesktop"];
         }
       ];
       gestures = {
@@ -587,6 +609,7 @@ in
         luajitPackages.lua-lsp
         svelte-language-server
         luarocks
+        tombi
       ];
 
       opts = {
@@ -1058,7 +1081,7 @@ in
               json = ["fixjson"];
               nix = ["alejandra"];
               markdown = ["markdownfmt"];
-              toml = ["taplo"];
+              toml = ["tombi"];
               terraform = ["terraform_fmt"];
               python = [
                 "isort"
@@ -1094,6 +1117,7 @@ in
             lua_ls.enable = true;
             svelte.enable = true;
             clangd.enable = true;
+            tombi.enable = true;
           };
         };
         luasnip = {
