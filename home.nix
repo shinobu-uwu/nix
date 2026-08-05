@@ -28,6 +28,11 @@ in
     home.username = "shinobu";
     home.homeDirectory = "/home/shinobu";
     home.stateVersion = "25.11";
+    home.packages = with pkgs; [
+      ffmpegthumbnailer
+      mediainfo
+      sxiv
+    ];
     imports = [
       ./modules/noctalia.nix
       inputs.nixvim.homeModules.nixvim
@@ -994,7 +999,6 @@ in
           lintersByFt = {
             go = ["golangcilint"];
             lua = ["luacheck"];
-            json = ["jsonlint"];
             markdown = ["vale"];
             c = ["clangtidy"];
           };
@@ -1044,6 +1048,15 @@ in
           enable = true;
           settings = {
             delay = 200;
+          };
+        };
+
+        colorizer = {
+          enable = true;
+          settings = {
+            display = {
+              mode = "virtualtext";
+            };
           };
         };
 
