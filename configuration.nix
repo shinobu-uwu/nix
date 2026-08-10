@@ -151,6 +151,11 @@
     "nix-command"
     "flakes"
   ];
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+    priority = 100;
+  };
 
   security.rtkit.enable = true;
   security.sudo = {

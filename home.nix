@@ -97,8 +97,8 @@ in
         size = 12;
       };
       theme = {
-        name = "Dracula";
-        package = pkgs.dracula-theme;
+        name = "adw-gtk3-dark";
+        package = pkgs.adw-gtk3;
       };
       iconTheme = {
         name = "Dracula";
@@ -184,6 +184,10 @@ in
           ];
           open-focused = false;
           open-on-workspace = "chats";
+        }
+        {
+          matches = [{app-id = "taskforge";}];
+          open-on-output = "DP-1";
         }
       ];
       input = {

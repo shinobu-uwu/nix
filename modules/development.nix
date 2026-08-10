@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     python3
     lua
@@ -11,7 +10,6 @@
     xh
     opencode
     cargo-generate
-    jetbrains.rider
     hyperfine
     codex
     llmfit

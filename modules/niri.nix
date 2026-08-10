@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    dracula-theme
+    adw-gtk3
     dracula-icon-theme
     bibata-cursors
     xwayland-satellite
