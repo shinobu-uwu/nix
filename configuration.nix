@@ -9,11 +9,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./modules/system.nix
-    ./modules/niri.nix
-    ./modules/development.nix
-    ./modules/chat.nix
-    ./modules/games.nix
 
     inputs.noctalia-greeter.nixosModules.default
   ];
@@ -47,17 +42,6 @@
 
   # Select internationalisation properties.
   i18n = {
-    inputMethod = {
-      enable = true;
-      type = "fcitx5";
-      fcitx5 = {
-        waylandFrontend = true;
-        addons = with pkgs; [
-          fcitx5-gtk
-          qt6Packages.fcitx5-configtool
-        ];
-      };
-    };
     defaultLocale = "en_US.UTF-8";
     extraLocaleSettings = {
       LC_ADDRESS = "pt_BR.UTF-8";
@@ -107,26 +91,17 @@
     "pnpm-10.29.2"
   ];
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    git
-    lact
-    efibootmgr
-    sbctl
-  ];
+  environment.systemPackages = [pkgs.nh];
 
   virtualisation.libvirtd.enable = true;
-  programs.zsh.enable = true;
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   programs.mtr.enable = true;
-  programs.gnupg.agent = {
+  programs.steam = {
     enable = true;
-    enableSSHSupport = true;
+    extraCompatPackages = with pkgs; [proton-ge-bin];
   };
+  programs.gamemode.enable = true;
 
   # List services that you want to enable:
 
@@ -198,11 +173,6 @@
     };
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gnome];
-  };
-
   hardware.opentabletdriver.enable = true;
   hardware.logitech.wireless.enable = true;
   hardware.logitech.wireless.enableGraphical = true;
@@ -219,15 +189,6 @@
 
   systemd.packages = with pkgs; [lact];
   systemd.services.lactd.wantedBy = ["multi-user.target"];
-  systemd.user.services.playerctld = {
-    description = "playerctl daemon";
-    wantedBy = ["default.target"];
-    serviceConfig = {
-      ExecStart = "${pkgs.playerctl}/bin/playerctld";
-      Restart = "on-failure";
-    };
-  };
-
   services.gvfs.enable = true;
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;

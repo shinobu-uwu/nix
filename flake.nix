@@ -48,12 +48,7 @@
             pkgs,
             ...
           }: {
-            environment.systemPackages = [pkgs.rust-bin.stable.latest.default];
-            nixpkgs.overlays = [
-              alacritty-theme.overlays.default
-              rust-overlay.overlays.default
-              niri.overlays.niri
-            ];
+            nixpkgs.overlays = [niri.overlays.niri];
           }
         )
       ];
@@ -74,10 +69,7 @@
       };
       extraSpecialArgs = {inherit inputs;};
       modules = [
-        ./home.nix
-        inputs.noctalia.homeModules.default
-        inputs.niri.homeModules.niri
-        inputs.plugged.homeManagerModules.default
+        ./home
       ];
     };
   };
