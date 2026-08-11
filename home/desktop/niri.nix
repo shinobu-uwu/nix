@@ -140,6 +140,14 @@ in
           "Mod+W".action.close-window = [];
           "Mod+Ctrl+W".action.quit.skip-confirmation = true;
           "Mod+F".action.maximize-column = [];
+          "XF86AudioRaiseVolume".action.spawn = ["${pkgs.wireplumber}/bin/wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+"];
+          "XF86AudioLowerVolume".action.spawn = ["${pkgs.wireplumber}/bin/wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"];
+          "XF86AudioMute".action.spawn = ["${pkgs.wireplumber}/bin/wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"];
+          "XF86AudioMicMute".action.spawn = ["${pkgs.wireplumber}/bin/wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"];
+          "XF86AudioPlay".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "play-pause"];
+          "XF86AudioStop".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "stop"];
+          "XF86AudioPrev".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "previous"];
+          "XF86AudioNext".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "next"];
           "Print".action.screenshot = {};
           "Ctrl+Print".action.screenshot-screen = {
             write-to-disk = false;

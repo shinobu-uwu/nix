@@ -102,6 +102,39 @@
       }
       {
         mode = "n";
+        key = "<leader>.";
+        action.__raw = "function() Snacks.scratch() end";
+        options.desc = "Toggle Scratch Buffer";
+      }
+      {
+        mode = "n";
+        key = "<leader>S";
+        action.__raw = "function() Snacks.scratch.select() end";
+        options.desc = "Select Scratch Buffer";
+      }
+      {
+        mode = "n";
+        key = "<leader>gg";
+        action.__raw = "function() Snacks.lazygit() end";
+        options.desc = "Open LazyGit";
+      }
+      {
+        mode = [
+          "n"
+          "v"
+        ];
+        key = "<leader>gB";
+        action.__raw = "function() Snacks.gitbrowse() end";
+        options.desc = "Open Git Location in Browser";
+      }
+      {
+        mode = "n";
+        key = "<leader>bd";
+        action.__raw = "function() Snacks.bufdelete() end";
+        options.desc = "Delete Buffer";
+      }
+      {
+        mode = "n";
         key = "T";
         action.__raw = "function() vim.diagnostic.open_float(nil, { focus = false }) end";
         options = {
@@ -250,7 +283,26 @@
       ts-autotag.enable = true;
       sleuth.enable = true;
       crates.enable = true;
-      inc-rename.enable = true;
+      inc-rename = {
+        enable = true;
+        settings.input_buffer_type = "snacks";
+      };
+      snacks = {
+        enable = true;
+        settings = {
+          bigfile.enabled = true;
+          input.enabled = true;
+          quickfile.enabled = true;
+          scratch = {};
+          lazygit = {};
+          gitbrowse = {};
+          styles.input = {
+            relative = "cursor";
+            row = -3;
+            col = 0;
+          };
+        };
+      };
       scrollview.enable = true;
       oil.enable = true;
       barbecue.enable = true;
