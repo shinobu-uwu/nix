@@ -147,6 +147,7 @@ in
           "Mod+Shift+C".action.move-column-to-workspace = "chats";
           "Mod+Return".action.spawn = "ghostty";
           "Mod+R".action.spawn = ["${noctalia}/bin/noctalia" "msg" "panel-toggle" "launcher"];
+          "Mod+Shift+W".action.spawn = ["${noctalia}/bin/noctalia" "msg" "wallpaper-random"];
           "Mod+P".action.spawn = ["${noctalia}/bin/noctalia" "msg" "panel-toggle" "control-center"];
           "Mod+Shift+P".action.spawn = ["${noctalia}/bin/noctalia" "msg" "settings-open"];
           "Mod+Escape".action.spawn = ["${noctalia}/bin/noctalia" "msg" "session" "lock"];
