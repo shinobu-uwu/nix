@@ -52,7 +52,7 @@
       LC_NUMERIC = "pt_BR.UTF-8";
       LC_PAPER = "pt_BR.UTF-8";
       LC_TELEPHONE = "pt_BR.UTF-8";
-      LC_TIME = "pt_BR.UTF-8";
+      LC_TIME = "en_US.UTF-8";
     };
   };
 
@@ -100,6 +100,7 @@
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   programs.mtr.enable = true;
+  programs.noisetorch.enable = true;
   programs.steam = {
     enable = true;
     extraCompatPackages = with pkgs; [proton-ge-bin];

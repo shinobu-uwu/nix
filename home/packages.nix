@@ -11,8 +11,6 @@
     insync
     krita
     mediainfo
-    mpv
-    noisetorch
     pavucontrol
     seahorse
     stremio-linux-shell
@@ -27,6 +25,7 @@
 
     # Command-line utilities
     bat
+    bitwarden-cli
     btop
     curl
     eza
@@ -147,6 +146,11 @@
           }
         ];
       };
+    };
+
+    mpv = {
+      enable = true;
+      scripts = [pkgs.mpvScripts.mpris];
     };
 
     prismlauncher.enable = true;

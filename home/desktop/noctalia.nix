@@ -11,14 +11,53 @@
         font_family = "Lexend Deca";
         time_format = "{:%H:%M}";
         avatar_path = ../assets/avatar.jpg;
+        corner_radius_scale = 1.1;
+        popup_borders = true;
+        popup_shadows = true;
+
+        animation = {
+          enabled = true;
+          speed = 1.35;
+        };
+
+        shadow = {
+          direction = "down";
+          alpha = 0.3;
+        };
+
+        panel = {
+          transparency_mode = "soft";
+          borders = true;
+          shadow = true;
+          launcher_placement = "floating";
+          control_center_placement = "floating";
+          launcher_position = "center";
+          control_center_position = "top_left";
+          floating_offset = 16;
+        };
       };
 
-      wallpaper.default.path = ../assets/wallpaper.jpg;
+      wallpaper = {
+        enabled = true;
+        directory = ../assets/wallpapers;
+        default.path = ../assets/wallpapers/wallpaper.jpg;
+        transition = [
+          "zoom"
+        ];
+        transition_duration = 1200;
+
+        automation = {
+          enabled = true;
+          interval_seconds = 15;
+          order = "random";
+          recursive = false;
+        };
+      };
 
       theme = {
         mode = "dark";
-        source = "builtin";
-        builtin = "Dracula";
+        source = "wallpaper";
+        wallpaper_scheme = "m3-tonal-spot";
       };
 
       notification = {
@@ -34,21 +73,25 @@
         unit = "metric";
       };
 
+      plugins = {
+        enabled = ["noctalia/bitwarden"];
+        auto_update = true;
+      };
+
       # Mirrored desktop dashboards for every display. These are separate
       # layer-shell surfaces and do not alter the bar below.
       desktop_widgets = let
         outputs = ["DP-1" "DP-2" "DP-3"];
         widgetNames = [
-          "date"
           "greeting"
-          "system"
+          "date"
           "media"
-          "terminal"
-          "files"
-          "browser"
-          "discord"
+          "system"
           "weather"
-          "volume"
+          "files"
+          "chrome"
+          "ghostty"
+          "steam"
         ];
       in {
         enabled = true;
@@ -70,18 +113,18 @@
             date = {
               type = "clock";
               cx = 176.0;
-              cy = 104.0;
-              box_width = 296.0;
-              box_height = 96.0;
+              cy = 252.0;
+              box_width = 320.0;
+              box_height = 128.0;
               settings = {
-                format = "{:%A\n%B %d, %Y}";
+                format = "{:%H:%M\n%A, %B %d}";
                 center_text = false;
                 color = "on_surface";
                 shadow = true;
                 background = true;
                 background_color = "surface";
                 background_opacity = 0.72;
-                background_radius = 16;
+                background_radius = 14;
                 background_padding = 16;
               };
             };
@@ -89,28 +132,28 @@
             greeting = {
               type = "label";
               cx = 176.0;
-              cy = 214.0;
-              box_width = 296.0;
-              box_height = 96.0;
+              cy = 116.0;
+              box_width = 320.0;
+              box_height = 112.0;
               settings = {
-                title = "Good evening, shinobu.";
-                description = "Welcome home";
+                title = "Welcome home, shinobu.";
+                description = "NixOS · Niri";
                 color = "primary";
                 shadow = true;
                 background = true;
                 background_color = "surface";
                 background_opacity = 0.72;
-                background_radius = 16;
+                background_radius = 14;
                 background_padding = 16;
               };
             };
 
             system = {
               type = "sysmon";
-              cx = 176.0;
-              cy = 342.0;
-              box_width = 296.0;
-              box_height = 128.0;
+              cx = 1736.0;
+              cy = 140.0;
+              box_width = 336.0;
+              box_height = 160.0;
               settings = {
                 stat = "cpu_usage";
                 stat2 = "ram_pct";
@@ -122,17 +165,17 @@
                 background = true;
                 background_color = "surface";
                 background_opacity = 0.72;
-                background_radius = 16;
-                background_padding = 16;
+                background_radius = 20;
+                background_padding = 10;
               };
             };
 
             media = {
               type = "media_player";
-              cx = 176.0;
-              cy = 500.0;
-              box_width = 296.0;
-              box_height = 156.0;
+              cx = 1680.0;
+              cy = 324.0;
+              box_width = 448.0;
+              box_height = 176.0;
               settings = {
                 layout = "horizontal";
                 color = "on_surface";
@@ -141,29 +184,33 @@
                 background = true;
                 background_color = "surface";
                 background_opacity = 0.72;
-                background_radius = 16;
+                background_radius = 20;
                 background_padding = 16;
               };
             };
 
-            terminal = {
-              type = "button";
-              cx = 80.0;
-              cy = 630.0;
-              box_width = 56.0;
-              box_height = 56.0;
+            weather = {
+              type = "weather";
+              cx = 176.0;
+              cy = 396.0;
+              box_width = 320.0;
+              box_height = 128.0;
               settings = {
-                glyph = "terminal-2";
-                command = "ghostty";
-                variant = "default";
+                color = "on_surface";
+                shadow = true;
+                show_forecast = false;
                 background = true;
+                background_color = "surface";
+                background_opacity = 0.72;
+                background_radius = 14;
+                background_padding = 16;
               };
             };
 
             files = {
               type = "button";
-              cx = 144.0;
-              cy = 630.0;
+              cx = 48.0;
+              cy = 504.0;
               box_width = 56.0;
               box_height = 56.0;
               settings = {
@@ -174,71 +221,45 @@
               };
             };
 
-            browser = {
+            chrome = {
+              type = "button";
+              cx = 128.0;
+              cy = 504.0;
+              box_width = 56.0;
+              box_height = 56.0;
+              settings = {
+                glyph = "brand-chrome";
+                command = "google-chrome-stable";
+                variant = "default";
+                background = true;
+              };
+            };
+
+            ghostty = {
               type = "button";
               cx = 208.0;
-              cy = 630.0;
+              cy = 504.0;
               box_width = 56.0;
               box_height = 56.0;
               settings = {
-                glyph = "brand-firefox";
-                command = "firefox";
+                glyph = "terminal-2";
+                command = "ghostty";
                 variant = "default";
                 background = true;
               };
             };
 
-            discord = {
+            steam = {
               type = "button";
-              cx = 272.0;
-              cy = 630.0;
+              cx = 288.0;
+              cy = 504.0;
               box_width = 56.0;
               box_height = 56.0;
               settings = {
-                glyph = "brand-discord";
-                command = "vesktop";
+                glyph = "brand-steam";
+                command = "steam";
                 variant = "default";
                 background = true;
-              };
-            };
-
-            weather = {
-              type = "weather";
-              cx = 1744.0;
-              cy = 192.0;
-              box_width = 296.0;
-              box_height = 208.0;
-              settings = {
-                color = "on_surface";
-                shadow = true;
-                show_forecast = true;
-                forecast_days = 5;
-                background = true;
-                background_color = "surface";
-                background_opacity = 0.72;
-                background_radius = 16;
-                background_padding = 16;
-              };
-            };
-
-            volume = {
-              type = "volume";
-              cx = 1744.0;
-              cy = 390.0;
-              box_width = 296.0;
-              box_height = 152.0;
-              settings = {
-                device = "output";
-                fill_color = "primary";
-                track_color = "on_surface_variant";
-                show_device = true;
-                scroll_step = 5;
-                shadow = true;
-                background = true;
-                background_color = "surface";
-                background_opacity = 0.72;
-                background_radius = 16;
-                background_padding = 16;
               };
             };
           };
@@ -291,30 +312,117 @@
         glyph = "server";
       };
 
+      widget.weather = {
+        show_condition = false;
+        show_temperature = true;
+      };
+
+      widget.active_window = {
+        display = "icon_and_text";
+        min_length = 80;
+        max_length = 360;
+        title_scroll = "on_hover";
+        show_empty_label = false;
+      };
+
+      widget."right-separator-1" = {
+        type = "text";
+        text = "│";
+        color = "outline";
+        interactive = false;
+        scale = 0.8;
+      };
+      widget."right-separator-2" = {
+        type = "text";
+        text = "│";
+        color = "outline";
+        interactive = false;
+        scale = 0.8;
+      };
+      widget."right-separator-3" = {
+        type = "text";
+        text = "│";
+        color = "outline";
+        interactive = false;
+        scale = 0.8;
+      };
+      widget."right-separator-4" = {
+        type = "text";
+        text = "│";
+        color = "outline";
+        interactive = false;
+        scale = 0.8;
+      };
+      widget."right-separator-5" = {
+        type = "text";
+        text = "│";
+        color = "outline";
+        interactive = false;
+        scale = 0.8;
+      };
+
       bar.main = {
         position = "top";
-        thickness = 40;
-        radius = 8;
-        scale = 1.2;
-        background_opacity = 1;
-        margin_ends = 4;
-        margin_edge = 4;
-        padding = 8;
-        widget_spacing = 16;
+        thickness = 44;
+        radius = 14;
+        scale = 1.15;
+        background_opacity = 0.0;
+        border_width = 0;
+        margin_ends = 8;
+        margin_edge = 8;
+        padding = 0;
+        widget_spacing = 12;
+        shadow = false;
+        capsule = true;
+        capsule_thickness = 0.88;
+        capsule_fill = "surface";
+        capsule_opacity = 0.78;
+        capsule_radius = 14;
+        capsule_padding = 8;
+        capsule_border = "outline";
 
-        start = [
-          "control-center"
-          "workspaces"
-          "media"
+        capsule_group = [
+          {
+            id = "left";
+            members = [
+              "control-center"
+              "workspaces"
+              "media"
+            ];
+            fill = "surface";
+            border = "outline";
+            radius = 14;
+            opacity = 0.78;
+            padding = 8;
+            widget_spacing = 12;
+          }
+          {
+            id = "right";
+            members = [
+              "weather"
+              "right-separator-1"
+              "volume"
+              "right-separator-2"
+              "cpu"
+              "right-separator-3"
+              "ram"
+              "right-separator-4"
+              "clock"
+              "right-separator-5"
+              "notifications"
+            ];
+            fill = "surface";
+            border = "outline";
+            radius = 14;
+            opacity = 0.78;
+            padding = 8;
+            widget_spacing = 12;
+          }
         ];
-        center = [];
-        end = [
-          "volume"
-          "cpu"
-          "ram"
-          "clock"
-          "notifications"
-        ];
+
+        start = ["group:left"];
+        center = ["active_window"];
+        end = ["group:right"];
       };
     };
   };

@@ -35,8 +35,10 @@ in {
     };
     Service = {
       ExecStart = "${noctalia}/bin/noctalia";
+      Environment = "LC_TIME=en_US.UTF-8";
       Restart = "on-failure";
     };
     Install.WantedBy = ["graphical-session.target"];
   };
+
 }

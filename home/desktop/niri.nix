@@ -54,8 +54,33 @@ in
         passes = 2;
         offset = 3.0;
         noise = 0.03;
-        saturation = 1.0;
+        saturation = 1.08;
       };
+
+      layer-rules = [
+        {
+          matches = [
+            {
+              namespace = "^noctalia-(notification|osd).*";
+            }
+          ];
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
+        }
+        {
+          matches = [
+            {
+              namespace = "^noctalia-desktop-widget-.*";
+            }
+          ];
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
+        }
+      ];
 
       window-rules = [
         {
@@ -66,10 +91,10 @@ in
             xray = false;
           };
           geometry-corner-radius = {
-            bottom-left = 8.0;
-            bottom-right = 8.0;
-            top-left = 8.0;
-            top-right = 8.0;
+            bottom-left = 12.0;
+            bottom-right = 12.0;
+            top-left = 12.0;
+            top-right = 12.0;
           };
         }
         {
@@ -109,8 +134,8 @@ in
         focus-ring = {
           enable = true;
           width = 2;
-          active.color = "#50fa7b";
-          inactive.color = "#bd93f9";
+          active.color = "#8fbdb5";
+          inactive.color = "#353b50";
         };
       };
       binds =
