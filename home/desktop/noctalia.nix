@@ -42,13 +42,18 @@
         directory = ../assets/wallpapers;
         default.path = ../assets/wallpapers/wallpaper.jpg;
         transition = [
+          "fade"
+          "wipe"
+          "disc"
+          "stripes"
           "zoom"
+          "honeycomb"
         ];
         transition_duration = 1200;
 
         automation = {
           enabled = true;
-          interval_seconds = 15;
+          interval_seconds = 10 * 60;
           order = "random";
           recursive = false;
         };
