@@ -34,6 +34,7 @@
       signcolumn = "yes";
       updatetime = 250;
       timeoutlen = 300;
+      cmdheight = 0;
       splitright = true;
       splitbelow = true;
       listchars = {
@@ -283,9 +284,31 @@
       ts-autotag.enable = true;
       sleuth.enable = true;
       crates.enable = true;
-      inc-rename = {
+      inc-rename.enable = true;
+      noice = {
         enable = true;
-        settings.input_buffer_type = "snacks";
+        settings = {
+          cmdline = {
+            enabled = true;
+            view = "cmdline";
+            format.IncRename = {
+              pattern = "^:%s*IncRename%s+";
+              icon = " ";
+              conceal = true;
+              view = "cmdline_popup";
+              opts = {
+                relative = "cursor";
+                size.min_width = 20;
+                position = {
+                  row = -3;
+                  col = 0;
+                };
+              };
+            };
+          };
+          messages.enabled = false;
+          popupmenu.enabled = false;
+        };
       };
       snacks = {
         enable = true;
@@ -613,6 +636,8 @@
         settings = {
           keymap = {
             preset = "enter";
+            "<C-Space>" = ["show"];
+            "<C-@>" = ["show"];
           };
           appearance = {
             use_nvim_cmp_as_default = true;
