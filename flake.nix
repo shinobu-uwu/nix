@@ -19,8 +19,9 @@
     };
     plugged.url = "github:shinobu-uwu/plugged";
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # This branch always points at the newest commit available from
+      # Noctalia's binary cache.
+      url = "github:noctalia-dev/noctalia/cachix";
     };
     noctalia-greeter = {
       url = "github:noctalia-dev/noctalia-greeter";

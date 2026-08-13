@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  noctalia = pkgs.callPackage (inputs.noctalia + "/nix/package.nix") {};
+  noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   services = {
     gpg-agent = {

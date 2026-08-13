@@ -23,7 +23,7 @@ in
     lib,
     ...
   }: let
-    noctalia = pkgs.callPackage (inputs.noctalia + "/nix/package.nix") {};
+    noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
   in {
     programs.niri.settings = {
       prefer-no-csd = true;
@@ -43,6 +43,41 @@ in
       ];
       gestures = {
         hot-corners.enable = false;
+      };
+      animations = {
+        workspace-switch.kind.spring = {
+          damping-ratio = 1.0;
+          stiffness = 900;
+          epsilon = 0.0001;
+        };
+        horizontal-view-movement.kind.spring = {
+          damping-ratio = 1.0;
+          stiffness = 850;
+          epsilon = 0.0001;
+        };
+        window-movement.kind.spring = {
+          damping-ratio = 1.0;
+          stiffness = 850;
+          epsilon = 0.0001;
+        };
+        window-resize.kind.spring = {
+          damping-ratio = 1.0;
+          stiffness = 850;
+          epsilon = 0.0001;
+        };
+        window-open.kind.easing = {
+          duration-ms = 140;
+          curve = "ease-out-expo";
+        };
+        window-close.kind.easing = {
+          duration-ms = 120;
+          curve = "ease-out-quad";
+        };
+        overview-open-close.kind.spring = {
+          damping-ratio = 1.0;
+          stiffness = 900;
+          epsilon = 0.0001;
+        };
       };
       workspaces = {
         "chats" = {

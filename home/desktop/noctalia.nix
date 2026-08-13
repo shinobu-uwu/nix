@@ -5,7 +5,7 @@
 }: {
   programs.noctalia = {
     enable = true;
-    package = pkgs.callPackage (inputs.noctalia + "/nix/package.nix") {};
+    package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
     settings = {
       shell = {
         font_family = "Lexend Deca";
@@ -369,7 +369,7 @@
       bar.main = {
         position = "top";
         thickness = 44;
-        radius = 14;
+        radius = 999;
         scale = 1.15;
         background_opacity = 0.0;
         border_width = 0;
@@ -382,7 +382,7 @@
         capsule_thickness = 0.88;
         capsule_fill = "surface";
         capsule_opacity = 0.78;
-        capsule_radius = 14;
+        capsule_radius = 999;
         capsule_padding = 8;
         capsule_border = "outline";
 
@@ -396,7 +396,7 @@
             ];
             fill = "surface";
             border = "outline";
-            radius = 14;
+            radius = 999;
             opacity = 0.78;
             padding = 8;
             widget_spacing = 12;
@@ -418,7 +418,7 @@
             ];
             fill = "surface";
             border = "outline";
-            radius = 14;
+            radius = 999;
             opacity = 0.78;
             padding = 8;
             widget_spacing = 12;
