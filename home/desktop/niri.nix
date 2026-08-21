@@ -210,7 +210,7 @@ in
           "XF86AudioPrev".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "previous"];
           "XF86AudioNext".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "next"];
           "Print".action.screenshot = {};
-          "Ctrl+Print".action.screenshot-screen = {
+          "Ctrl+Print".action.screenshot-window = {
             write-to-disk = false;
           };
         };

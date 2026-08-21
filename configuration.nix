@@ -5,7 +5,9 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  openlogi = pkgs.openlogi;
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -91,7 +93,10 @@
     "pnpm-10.29.2"
   ];
 
-  environment.systemPackages = [pkgs.nh];
+  environment.systemPackages = [
+    pkgs.nh
+    openlogi
+  ];
 
   virtualisation = {
     docker.enable = true;
@@ -101,6 +106,17 @@
   # started in user sessions.
   programs.mtr.enable = true;
   programs.noisetorch.enable = true;
+  # Generate spellcheck policies for Chromium-based browsers, including Chrome.
+  programs.chromium = {
+    enable = true;
+    extraOpts = {
+      SpellcheckEnabled = true;
+      SpellcheckLanguage = [
+        "en-US"
+        "pt-BR"
+      ];
+    };
+  };
   programs.steam = {
     enable = true;
     extraCompatPackages = with pkgs; [proton-ge-bin];
@@ -184,10 +200,19 @@
   };
 
   hardware.opentabletdriver.enable = true;
-  hardware.logitech.wireless.enable = true;
-  hardware.logitech.wireless.enableGraphical = true;
   hardware.uinput.enable = true;
   boot.kernelModules = ["uinput"];
+  services.udev.packages = [openlogi];
+  systemd.user.services.openlogi-agent = {
+    description = "OpenLogi background agent";
+    after = ["graphical-session.target"];
+    wantedBy = ["graphical-session.target"];
+    serviceConfig = {
+      ExecStart = "${openlogi}/bin/openlogi-agent";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+  };
   hardware.graphics = {
     enable = true;
     enable32Bit = true;

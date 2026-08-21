@@ -1,4 +1,6 @@
-{pkgs, ...}: {
+{config, pkgs, ...}: {
+  home.file."${config.xdg.configHome}/vesktop/settings.json".force = true;
+
   home.packages = with pkgs; [
     # Desktop applications and media
     bluetui
@@ -12,15 +14,17 @@
     krita
     mediainfo
     pavucontrol
+    proton-vpn
     seahorse
     stremio-linux-shell
     sxiv
     via
+    wineWow64Packages.stable
+    winetricks
     yt-dlp
 
     # Chat
     qt6.qtwayland
-    vesktop
     zapzap
 
     # Command-line utilities
@@ -31,6 +35,9 @@
     eza
     fd
     glmark2
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.pt_BR
     jump
     killall
     libsecret
@@ -154,5 +161,20 @@
     };
 
     prismlauncher.enable = true;
+
+    vesktop = {
+      enable = true;
+      settings = {
+        discordBranch = "stable";
+        minimizeToTray = false;
+        arRPC = true;
+        splashColor = "rgb(220, 220, 223)";
+        splashBackground = "rgb(0, 0, 0)";
+        spellCheckLanguages = [
+          "en-US"
+          "pt-BR"
+        ];
+      };
+    };
   };
 }
