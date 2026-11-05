@@ -40,6 +40,9 @@ in
         {
           argv = ["vesktop"];
         }
+        {
+          argv = ["zapfast"];
+        }
       ];
       gestures = {
         hot-corners.enable = false;
@@ -134,7 +137,7 @@ in
         }
         {
           matches = [
-            {app-id = "zapzap";}
+            {app-id = "zapfast";}
             {app-id = "vesktop";}
           ];
           open-focused = false;
@@ -142,6 +145,10 @@ in
         }
         {
           matches = [{app-id = "taskforge";}];
+          open-on-output = "DP-1";
+        }
+        {
+          matches = [{app-id = "qemu";}];
           open-on-output = "DP-1";
         }
       ];
@@ -266,7 +273,6 @@ in
         obs-vaapi
         obs-gstreamer
         obs-vkcapture
-        obs-move-transition
         obs-multi-rtmp
       ];
     };

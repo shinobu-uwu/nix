@@ -51,7 +51,6 @@
     dejavu_fonts
     font-awesome
     freefont_ttf
-    google-fonts
     gyre-fonts
     lexend
     liberation_ttf

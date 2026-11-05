@@ -5,9 +5,18 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     niri.url = "github:epireyn/niri-flake";
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
+    helium = {
+      url = "github:oxcl/nix-flake-helium-browser";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    zapfast = {
+      url = "github:crmne/zapfast";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.rust-overlay.follows = "rust-overlay";
     };
     home-manager = {
       url = "github:nix-community/home-manager";

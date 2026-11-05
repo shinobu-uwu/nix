@@ -38,6 +38,14 @@ in {
 
   # Enable networking
   networking.networkmanager.enable = true;
+  # Use Cloudflare DNS instead of DNS servers supplied by the network.
+  networking.networkmanager.dns = "none";
+  networking.useDHCP = false;
+  networking.dhcpcd.enable = false;
+  networking.nameservers = [
+    "1.1.1.1"
+    "1.0.0.1"
+  ];
 
   # Set your time zone.
   time.timeZone = "America/Sao_Paulo";

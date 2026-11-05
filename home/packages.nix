@@ -1,4 +1,9 @@
-{config, pkgs, ...}: {
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}: {
   home.file."${config.xdg.configHome}/vesktop/settings.json".force = true;
 
   home.packages = with pkgs; [
@@ -9,10 +14,11 @@
     ffmpegthumbnailer
     gimp
     google-chrome
+    inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default
     impala
-    insync
     krita
     mediainfo
+    mission-center
     pavucontrol
     proton-vpn
     seahorse
@@ -25,7 +31,7 @@
 
     # Chat
     qt6.qtwayland
-    zapzap
+    inputs.zapfast.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Command-line utilities
     bat
